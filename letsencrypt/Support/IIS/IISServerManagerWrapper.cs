@@ -12,11 +12,20 @@ namespace letsencrypt.Support
     {
         private ServerManager manager;
 
-        public IEnumerable<Site> Sites
+        public IEnumerable<IIISSite> Sites
         {
             get
             {
-                return GetManager().Sites;
+                return GetSites();
+            }
+        }
+
+        private IEnumerable<IIISSite> GetSites()
+        {
+            var sites = GetManager().Sites;
+            foreach(var site in sites)
+            {
+                yield return new IISSiteWrapper(site);
             }
         }
 

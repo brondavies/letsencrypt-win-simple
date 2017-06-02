@@ -23,7 +23,7 @@ namespace letsencrypt
 
         protected Dictionary<string, string> config;
 
-        private static Type managerType = typeof(IISServerManagerWrapper);
+        private static Type _managerType = typeof(IISServerManagerWrapper);
 
         public override void PrintMenu()
         {
@@ -283,7 +283,7 @@ namespace letsencrypt
                                     {
                                         SiteId = site.Id,
                                         Host = binding.Host,
-                                        WebRootPath = site.Applications["/"].VirtualDirectories["/"].PhysicalPath,
+                                        WebRootPath = site.GetPhysicalPath(),
                                         PluginName = Name
                                     });
                                 }
@@ -298,7 +298,7 @@ namespace letsencrypt
                                     {
                                         SiteId = site.Id,
                                         Host = binding.Host,
-                                        WebRootPath = site.Applications["/"].VirtualDirectories["/"].PhysicalPath,
+                                        WebRootPath = site.GetPhysicalPath(),
                                         PluginName = Name
                                     });
                                 }
@@ -339,12 +339,12 @@ namespace letsencrypt
 
         private static IIISServerManager GetServerManager()
         {
-            return (IIISServerManager)managerType.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes);
+            return _managerType.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes) as IIISServerManager;
         }
 
         public static void RegisterServerManager<T>() where T : IIISServerManager
         {
-            managerType = typeof(T);
+            _managerType = typeof(T);
         }
 
         internal List<Target> GetSites()
@@ -381,7 +381,7 @@ namespace letsencrypt
                                 {
                                     SiteId = site.Id,
                                     Host = binding.Host,
-                                    WebRootPath = site.Applications["/"].VirtualDirectories["/"].PhysicalPath,
+                                    WebRootPath = site.GetPhysicalPath(),
                                     PluginName = Name
                                 });
                             }
@@ -392,7 +392,7 @@ namespace letsencrypt
                             {
                                 SiteId = site.Id,
                                 Host = site.Name,
-                                WebRootPath = site.Applications["/"].VirtualDirectories["/"].PhysicalPath,
+                                WebRootPath = site.GetPhysicalPath(),
                                 PluginName = Name,
                                 AlternativeNames = hosts
                             });
@@ -461,9 +461,9 @@ namespace letsencrypt
                                 .FirstOrDefault();
                         if (existingHTTPBinding != null)
                         {
-                            string IP = GetIP(existingHTTPBinding.EndPoint.ToString(), host, options);
+                            string IP = GetIP(existingHTTPBinding.GetEndPoint(), host, options);
 
-                            var iisBinding = site.Bindings.Add(IP + ":443:" + host, certificate.GetCertHash(), store.Name);
+                            var iisBinding = site.AddBinding(IP + ":443:" + host, certificate.GetCertHash(), store.Name);
                             iisBinding.Protocol = "https";
 
                             if (GetIisVersion().Major >= 8)
@@ -538,9 +538,9 @@ namespace letsencrypt
                             if (existingHTTPBinding != null)
                             //This had been a fix for the multiple site San cert, now it's a precaution against erroring out
                             {
-                                string IP = GetIP(existingHTTPBinding.EndPoint.ToString(), host, options);
+                                string IP = GetIP(existingHTTPBinding.GetEndPoint(), host, options);
 
-                                var iisBinding = site.Bindings.Add(IP + ":443:" + host, "https");
+                                var iisBinding = site.AddBinding(IP + ":443:" + host, "https");
 
                                 iisBinding.SetAttributeValue("sslFlags", 3);
                                 // Enable Centralized Certificate Store with SNI
@@ -637,7 +637,7 @@ namespace letsencrypt
             File.WriteAllText(answerPath, fileContents);
         }
 
-        private Site GetSite(Target target, IIISServerManager iisManager)
+        private IIISSite GetSite(Target target, IIISServerManager iisManager)
         {
             foreach (var site in iisManager.Sites)
             {

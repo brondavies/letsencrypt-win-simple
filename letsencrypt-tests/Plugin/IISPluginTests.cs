@@ -7,7 +7,7 @@ using letsencrypt.Support;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
-using Microsoft.QualityTools.Testing.Fakes;
+using Microsoft.Web.Administration;
 
 namespace letsencrypt_tests
 {
@@ -50,13 +50,10 @@ namespace letsencrypt_tests
         [TestMethod()]
         public void IISPlugin_ValidateTest()
         {
-            using (ShimsContext.Create())
-            {
-                IISPlugin plugin;
-                Options options;
-                CreatePlugin(out plugin, out options);
-                Assert.IsTrue(plugin.Validate(options));
-            }
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            Assert.IsTrue(plugin.Validate(options));
         }
 
         [TestMethod()]
@@ -72,14 +69,11 @@ namespace letsencrypt_tests
         [TestMethod()]
         public void IISPlugin_SelectOptionsTest()
         {
-            using (ShimsContext.Create())
-            {
-                IISPlugin plugin;
-                Options options;
-                CreatePlugin(out plugin, out options);
-                plugin.Validate(options);
-                Assert.IsTrue(plugin.SelectOptions(options));
-            }
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            plugin.Validate(options);
+            Assert.IsTrue(plugin.SelectOptions(options));
         }
 
         [TestMethod()]
@@ -104,38 +98,32 @@ namespace letsencrypt_tests
         [TestMethod()]
         public void IISPlugin_InstallTest()
         {
-            using (ShimsContext.Create())
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            options.BaseUri = ProxyUrl("/");
+            plugin.client = MockAcmeClient(options);
+            var target = new Target
             {
-                IISPlugin plugin;
-                Options options;
-                CreatePlugin(out plugin, out options);
-                options.BaseUri = ProxyUrl("/");
-                plugin.client = MockAcmeClient(options);
-                var target = new Target
-                {
-                    PluginName = R.IIS,
-                    Host = HTTPProxyServer,
-                    SiteId = 0,
-                    WebRootPath = plugin.BaseDirectory
-                };
-                plugin.Install(target, options);
-            }
+                PluginName = R.IIS,
+                Host = HTTPProxyServer,
+                SiteId = 0,
+                WebRootPath = plugin.BaseDirectory
+            };
+            plugin.Install(target, options);
         }
 
         [TestMethod()]
         public void IISPlugin_GetTargetsTest()
         {
-            using (ShimsContext.Create())
-            {
-                IISPlugin plugin;
-                Options options;
-                CreatePlugin(out plugin, out options);
-                var targets = plugin.GetTargets(options);
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            var targets = plugin.GetTargets(options);
 
-                Assert.AreEqual(targets.Count, 1);
-                Assert.AreEqual(targets[0].PluginName, R.IIS);
-                Assert.AreEqual(targets[0].Host, "localhost");
-            }
+            Assert.AreEqual(targets.Count, 1);
+            Assert.AreEqual(targets[0].PluginName, R.IIS);
+            Assert.AreEqual(targets[0].Host, "localhost");
         }
 
         [TestMethod()]

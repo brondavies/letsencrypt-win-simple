@@ -1,39 +1,37 @@
 ﻿using System;
 using letsencrypt.Support;
 using Microsoft.Web.Administration;
-using Microsoft.Web.Administration.Fakes;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
+using Moq;
+using System.Linq;
 
 namespace letsencrypt_tests.Support
 {
     internal class MockIISServerManager : IIISServerManager
     {
-        public IEnumerable<Site> Sites
+        private IEnumerable<IIISSite> FakeSites
         {
             get
             {
-                return new Site[] { new ShimSite {
-                    IdGet = () => 0,
-                    BindingsGet = () => FakeBindings,
-                    ApplicationsGet = () => FakeApplications //Applications["/"].VirtualDirectories["/"].PhysicalPath
-                } };
+                var mockSite = new Mock<IIISSite>();
+                mockSite.Setup((m) => m.Id).Returns(0);
+                mockSite.Setup((m) => m.Bindings).Returns(FakeBindings);
+
+                return new[] { mockSite.Object };
             }
         }
 
-        private BindingCollection FakeBindings
+        private IEnumerable<IIISBinding> FakeBindings
         {
             get
             {
-                var col = new ShimBindingCollection();
-                var bindings = new Binding[] { new ShimBinding {
-                        HostGet = () => "localhost",
-                        ProtocolGet = () => "http"
-                    } };
-                col.Bind((IEnumerable<Binding>)bindings);
+                var binding = new Mock<IIISBinding>();
+                binding.Setup(m => m.Host).Returns("localhost");
+                binding.Setup(m => m.Protocol).Returns("http");
 
-                return col;
+                return new List<IIISBinding> { binding.Object };
             }
         }
 
@@ -41,19 +39,16 @@ namespace letsencrypt_tests.Support
         {
             get
             {
-                var col = new ShimApplicationCollection();
-                col.ItemGetString = (s) =>
-                {
-                    return new ShimApplication
-                    {
-                        VirtualDirectoriesGet = () =>
-                        {
-                            return FakeVirtualDirectories;
-                        }
-                    };
-                };
+                var application = new Mock<Application>();
+                application.Setup(m => m.VirtualDirectories).Returns(FakeVirtualDirectories);
 
-                return col;
+                IEnumerable<Application> items = new List<Application> { application.Object };
+                var mock = new Mock<ApplicationCollection>();
+                mock.Setup(m => m.Count).Returns(items.Count);
+                mock.Setup(m => m[It.IsAny<int>()]).Returns<int>(i => items.ElementAt(i));
+                mock.Setup(m => m.GetEnumerator()).Returns(() => items.GetEnumerator());
+                
+                return mock.Object;
             }
         }
 
@@ -61,16 +56,25 @@ namespace letsencrypt_tests.Support
         {
             get
             {
-                var col = new ShimVirtualDirectoryCollection();
-                col.ItemGetString = (s) =>
-                {
-                    return new ShimVirtualDirectory
-                    {
-                        PhysicalPathGet = () => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                    };
-                };
+                var localPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var mockVD = new Mock<VirtualDirectory>();
+                mockVD.Setup(m => m.PhysicalPath).Returns(localPath);
 
-                return col;
+                IEnumerable<VirtualDirectory> items = new List<VirtualDirectory> { mockVD.Object };
+                var mock = new Mock<VirtualDirectoryCollection>();
+                mock.Setup(m => m.Count).Returns(items.Count);
+                mock.Setup(m => m[It.IsAny<int>()]).Returns<int>(i => items.ElementAt(i));
+                mock.Setup(m => m.GetEnumerator()).Returns(() => items.GetEnumerator());
+
+                return mock.Object;
+            }
+        }
+
+        public IEnumerable<IIISSite> Sites
+        {
+            get
+            {
+                return FakeSites;
             }
         }
 
