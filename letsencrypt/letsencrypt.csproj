@@ -148,6 +148,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Support\AzureRestApi.cs" />
+    <Compile Include="Support\IIISServerManager.cs" />
+    <Compile Include="Support\IISServerManagerWrapper.cs" />
     <Compile Include="Support\ObjectExtensions.cs" />
     <Compile Include="Support\Options.cs" />
     <Compile Include="Support\ScheduledRenewal.cs" />

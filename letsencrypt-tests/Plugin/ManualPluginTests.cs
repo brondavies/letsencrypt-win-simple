@@ -4,7 +4,6 @@ using System;
 
 using letsencrypt_tests.Support;
 using letsencrypt.Support;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
 
@@ -40,8 +39,6 @@ namespace letsencrypt_tests
         private void CreatePlugin(out ManualPlugin plugin, out Options options)
         {
             plugin = new ManualPlugin();
-            AzureRestApi.ApiRootUrl =
-            AzureRestApi.AuthRootUrl = removeLastSlash(ProxyUrl("/"));
             options = MockOptions();
             options.Plugin = R.Manual;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -129,11 +126,10 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
             plugin.localPath = plugin.BaseDirectory;
-
-            var webRoot = "/";
+            
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = $"{FTPServerUrl}{webRoot}";
+            var rootPath = $"{plugin.localPath}";
             var target = new Target
             {
                 PluginName = R.Manual,
@@ -155,7 +151,7 @@ namespace letsencrypt_tests
             
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var challengeFile = $"{MockFtpServer.localPath}{challengeLocation}".Replace('/', Path.DirectorySeparatorChar);
+            var challengeFile = $"{rootPath}{challengeLocation}".Replace('/', Path.DirectorySeparatorChar);
             plugin.CreateAuthorizationFile(challengeFile, token);
             Assert.IsTrue(File.Exists(challengeFile));
         }

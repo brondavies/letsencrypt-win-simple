@@ -89,6 +89,16 @@
       <HintPath>..\packages\ManagedOpenSsl32.0.6.1.3\lib\net20\ManagedOpenSsl.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\IIS.Microsoft.Web.Administration.8.5.9600.17042\lib\Microsoft.Web.Administration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Administration.7.0.0.0.Fakes">
+      <HintPath>FakesAssemblies\Microsoft.Web.Administration.7.0.0.0.Fakes.dll</HintPath>
+    </Reference>
     <Reference Include="Minimatch, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0cadeb0b849c27c0, processorArchitecture=MSIL">
       <HintPath>..\packages\FubarDev.Minimatch.1.2.0\lib\portable-net45+dnxcore50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Minimatch.dll</HintPath>
       <Private>True</Private>
@@ -128,7 +138,9 @@
   <ItemGroup>
     <Compile Include="LetsEncryptTests.cs" />
     <Compile Include="Plugin\AzureWebAppPluginTests.cs" />
+    <Compile Include="Plugin\IISPluginTests.cs" />
     <Compile Include="Plugin\ManualPluginTests.cs" />
+    <Compile Include="Support\MockIISServerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\CertificateCreator.cs" />
     <Compile Include="Support\HttpRequestEventHandlerExtensions.cs" />
@@ -151,6 +163,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <Content Include="AzureWebApp.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Fakes Include="Fakes\Microsoft.Web.Administration.fakes" />
+    <Content Include="IIS.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="localhost22233-all.pfx">

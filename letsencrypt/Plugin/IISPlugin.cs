@@ -1,6 +1,5 @@
 ﻿using letsencrypt.Support;
 using Microsoft.Web.Administration;
-using Microsoft.Win32;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -21,6 +20,10 @@ namespace letsencrypt
         private static Version _iisVersion = null;
 
         private List<Target> targets;
+
+        protected Dictionary<string, string> config;
+
+        private static Type managerType = typeof(IISServerManagerWrapper);
 
         public override void PrintMenu()
         {
@@ -260,7 +263,7 @@ namespace letsencrypt
             }
             else
             {
-                using (var iisManager = new ServerManager())
+                using (var iisManager = GetServerManager())
                 {
                     foreach (var site in iisManager.Sites)
                     {
@@ -271,7 +274,7 @@ namespace letsencrypt
                         foreach (var binding in site.Bindings)
                         {
                             //Get HTTP sites that aren't IDN
-                            if (!String.IsNullOrEmpty(binding.Host) && binding.Protocol == "http" &&
+                            if (!string.IsNullOrEmpty(binding.Host) && binding.Protocol == "http" &&
                                 !Regex.IsMatch(binding.Host, @"[^\u0000-\u007F]"))
                             {
                                 if (returnHTTP.Where(h => h.Host == binding.Host).Count() == 0)
@@ -286,7 +289,7 @@ namespace letsencrypt
                                 }
                             }
                             //Get HTTPS sites that aren't IDN
-                            if (!String.IsNullOrEmpty(binding.Host) && binding.Protocol == "https" &&
+                            if (!string.IsNullOrEmpty(binding.Host) && binding.Protocol == "https" &&
                                 !Regex.IsMatch(binding.Host, @"[^\u0000-\u007F]"))
                             {
                                 if (siteHTTPS.Where(h => h.Host == binding.Host).Count() == 0)
@@ -303,7 +306,7 @@ namespace letsencrypt
                         }
 
                         siteHTTP.AddRange(returnHTTP);
-                        if (options.HideHttps == true)
+                        if (options.HideHttps)
                         {
                             foreach (var bindingHTTPS in siteHTTPS)
                             {
@@ -334,6 +337,16 @@ namespace letsencrypt
             return result;
         }
 
+        private static IIISServerManager GetServerManager()
+        {
+            return (IIISServerManager)managerType.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes);
+        }
+
+        public static void RegisterServerManager<T>() where T : IIISServerManager
+        {
+            managerType = typeof(T);
+        }
+
         internal List<Target> GetSites()
         {
             Log.Information(R.ScanningIISsites);
@@ -346,7 +359,7 @@ namespace letsencrypt
             }
             else
             {
-                using (var iisManager = new ServerManager())
+                using (var iisManager = GetServerManager())
                 {
                     foreach (var site in iisManager.Sites)
                     {
@@ -399,8 +412,6 @@ namespace letsencrypt
 
             return result.OrderBy(r => r.SiteId).ToList();
         }
-        
-        protected Dictionary<string, string> config;
 
         public override void BeforeAuthorize(Target target, string answerPath, string token)
         {
@@ -413,7 +424,7 @@ namespace letsencrypt
 
         public void InstallSSL(Target target, string pfxFilename, X509Store store, X509Certificate2 certificate, Options options)
         {
-            using (var iisManager = new ServerManager())
+            using (var iisManager = GetServerManager())
             {
                 var site = GetSite(target, iisManager);
                 List<string> hosts = new List<string>();
@@ -477,7 +488,7 @@ namespace letsencrypt
             Log.Information(R.InstallingcentralSSLcertificate);
             try
             {
-                using (var iisManager = new ServerManager())
+                using (var iisManager = GetServerManager())
                 {
                     var site = GetSite(target, iisManager);
 
@@ -558,19 +569,7 @@ namespace letsencrypt
                 _iisVersion = new Version(0, 0);
                 try
                 {
-                    using (RegistryKey inetStpKey = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\InetStp", false))
-                    {
-                        if (inetStpKey != null)
-                        {
-                            int majorVersion = (int)inetStpKey.GetValue("MajorVersion", -1);
-                            int minorVersion = (int)inetStpKey.GetValue("MinorVersion", -1);
-
-                            if (majorVersion != -1 && minorVersion != -1)
-                            {
-                                _iisVersion = new Version(majorVersion, minorVersion);
-                            }
-                        }
-                    }
+                    _iisVersion = GetServerManager().GetVersion();
                 }
                 catch(Exception e)
                 {
@@ -638,7 +637,7 @@ namespace letsencrypt
             File.WriteAllText(answerPath, fileContents);
         }
 
-        private Site GetSite(Target target, ServerManager iisManager)
+        private Site GetSite(Target target, IIISServerManager iisManager)
         {
             foreach (var site in iisManager.Sites)
             {
