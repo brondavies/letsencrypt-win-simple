@@ -12,9 +12,9 @@ namespace letsencrypt
     {
         private Dictionary<string, string> config;
 
-        private string hostName;
+        public string hostName;
 
-        private string ftpPath;
+        public string ftpPath;
 
         public NetworkCredential FtpCredentials;
 
@@ -59,7 +59,7 @@ namespace letsencrypt
                 R.Example + ": ftp://domain.com:21/site/wwwroot/" + "\n" +
                 R.Example + ": ftps://domain.com:990/site/wwwroot/" + "\n:";
                 ftpPath = LetsEncrypt.PromptForText(options, message);
-                RequireNotNull("host_name", ftpPath);
+                RequireNotNull("ftp_path", ftpPath);
             }
 
             var ftpUser = LetsEncrypt.GetString(config, "ftp_user");

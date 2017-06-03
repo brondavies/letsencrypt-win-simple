@@ -1,0 +1,6 @@
+{
+  "host_name": "localhost",
+  "ftp_user": "testuser",
+  "ftp_password": "test",
+  "ftp_path": "ftp://localhost:21212/site/wwwroot/"
+}
