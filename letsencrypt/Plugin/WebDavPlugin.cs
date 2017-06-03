@@ -11,11 +11,13 @@ namespace letsencrypt
     {
         private Dictionary<string, string> config;
 
-        private string hostName;
-        
-        private string WebDAVPath;
+        public Type webDAVClientType = typeof(WebDAVClient.Client);
 
-        private NetworkCredential WebDAVCredentials { get; set; }
+        public string hostName;
+        
+        public string WebDAVPath;
+        
+        public NetworkCredential WebDAVCredentials { get; set; }
 
         public override string Name => R.WebDAV;
 
@@ -170,14 +172,17 @@ namespace letsencrypt
             return names.TrimEnd('\r', '\n', ',');
         }
 
-        private WebDAVClient.Client CreateWebDAVClient(string webDAVPath)
+        private WebDAVClient.IClient CreateWebDAVClient(string webDAVPath)
         {
             Uri WebDAVUri = new Uri(WebDAVPath);
             var scheme = WebDAVUri.Scheme;
             string WebDAVConnection = scheme + "://" + WebDAVUri.Host + ":" + WebDAVUri.Port;
             string path = WebDAVUri.AbsolutePath;
 
-            var webdavclient = new WebDAVClient.Client(WebDAVCredentials);
+            var webdavclient = (WebDAVClient.IClient)(webDAVClientType
+                .GetConstructor(new[] { typeof(NetworkCredential) })
+                .Invoke(new[] { WebDAVCredentials }));
+            //var webdavclient = new WebDAVClient.Client(WebDAVCredentials);
             webdavclient.Server = WebDAVConnection;
             webdavclient.BasePath = path;
             return webdavclient;

@@ -1,0 +1,6 @@
+{
+  "host_name": "test.example.com",
+  "webdav_path": "http://localhost:22233/webdav/",
+  "webdav_user": "testuser",
+  "webdav_password": "test"
+}
