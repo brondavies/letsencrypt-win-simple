@@ -154,6 +154,21 @@ namespace letsencrypt_tests
             var challengeFile = $"{rootPath}{challengeLocation}".Replace('/', Path.DirectorySeparatorChar);
             plugin.CreateAuthorizationFile(challengeFile, token);
         }
+        
+        [TestMethod()]
+        public void WebDAVPlugin_DeleteAuthorizationTest()
+        {
+            WebDAVPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+
+            var token = "this-is-a-test";
+            var webRoot = "/";
+            var challengeLocation = $"/.well-known/acme-challenge/{token}";
+            var rootPath = plugin.BaseDirectory;
+            
+            plugin.DeleteAuthorization(options, rootPath + challengeLocation, token, webRoot, challengeLocation);
+        }
 
         [TestCleanup]
         public override void Cleanup()
