@@ -139,6 +139,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="LetsEncryptTests.cs" />
+    <Compile Include="Plugin\FTPPluginTests.cs" />
     <Compile Include="Plugin\AzureWebAppPluginTests.cs" />
     <Compile Include="Plugin\IISPluginTests.cs" />
     <Compile Include="Plugin\IISSiteServerPluginTests.cs" />
@@ -172,6 +173,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="IISSiteServer.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="FTP.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="localhost22233-all.pfx">
