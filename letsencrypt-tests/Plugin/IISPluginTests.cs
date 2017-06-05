@@ -124,7 +124,7 @@ namespace letsencrypt_tests
             var token = "this-is-a-test";
             var webRoot = "/";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             var challengeFile = $"{rootPath}{challengeLocation}".Replace('/', Path.DirectorySeparatorChar);
 
             Directory.CreateDirectory(Path.GetDirectoryName(challengeFile));
@@ -141,13 +141,14 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             options.BaseUri = ProxyUrl("/");
+            options.Warmup = true;
             plugin.client = MockAcmeClient(options);
             var target = new Target
             {
                 PluginName = R.IIS,
                 Host = HTTPProxyServer,
                 SiteId = 0,
-                WebRootPath = plugin.BaseDirectory
+                WebRootPath = Plugin.BaseDirectory
             };
             plugin.Install(target, options);
         }
@@ -159,7 +160,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             options.CentralSsl = true;
-            options.CentralSslStore = plugin.BaseDirectory;
+            options.CentralSslStore = Plugin.BaseDirectory;
             options.BaseUri = ProxyUrl("/");
             plugin.client = MockAcmeClient(options);
             var target = new Target
@@ -167,7 +168,7 @@ namespace letsencrypt_tests
                 PluginName = R.IIS,
                 Host = HTTPProxyServer,
                 SiteId = 0,
-                WebRootPath = plugin.BaseDirectory
+                WebRootPath = Plugin.BaseDirectory
             };
             plugin.Install(target, options);
         }
@@ -202,7 +203,7 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             var target = new Target
             {
                 PluginName = R.IIS,
@@ -221,7 +222,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             var token = "this-is-a-test";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             var challengeFile = Path.Combine(rootPath, ".well-known", "acme-challenge", token);
             plugin.CreateAuthorizationFile(challengeFile, token);
             Assert.IsTrue(File.Exists(challengeFile));

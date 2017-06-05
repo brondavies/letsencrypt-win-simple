@@ -33,9 +33,11 @@ namespace letsencrypt
         /// <summary>
         /// Get the path to the folder of the dll
         /// </summary>
-        public string BaseDirectory {
-            get {
-                return Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location);
+        public static string BaseDirectory
+        {
+            get
+            {
+                return Path.GetDirectoryName(Assembly.GetAssembly(typeof(Plugin)).Location);
             }
         }
 
@@ -104,7 +106,7 @@ namespace letsencrypt
             return new Dictionary<string, string>();
         }
 
-        protected static void RequireNotNull(string field, string value)
+        public static void RequireNotNull(string field, string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -216,6 +218,7 @@ namespace letsencrypt
             bool retry = false;
             do
             {
+                retry = false;
                 try
                 {
                     var request = WebRequest.Create(uri);
@@ -244,7 +247,8 @@ namespace letsencrypt
             if (binding.AlternativeNames != null)
             {
                 allDnsIdentifiers.AddRange(binding.AlternativeNames);
-            }else
+            }
+            else
             {
                 allDnsIdentifiers.Add(binding.Host);
             }
@@ -483,7 +487,7 @@ namespace letsencrypt
             Log.Error(R.IISAuthorizeFailedMessage);
         }
 
-        public virtual void RunScript(Target target, string pfxFilename, X509Store store, X509Certificate2 certificate, Options options)
+        public static void RunScript(Target target, string pfxFilename, X509Store store, X509Certificate2 certificate, Options options)
         {
             if (!string.IsNullOrWhiteSpace(options.Script))
             {

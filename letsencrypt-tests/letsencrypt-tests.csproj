@@ -157,6 +157,7 @@
     <Compile Include="Plugin\AzureWebAppPluginTests.cs" />
     <Compile Include="Plugin\IISPluginTests.cs" />
     <Compile Include="Plugin\IISSiteServerPluginTests.cs" />
+    <Compile Include="Plugin\PluginTests.cs" />
     <Compile Include="Plugin\WebDAVPluginTests.cs" />
     <Compile Include="Plugin\ManualPluginTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

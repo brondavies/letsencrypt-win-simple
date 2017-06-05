@@ -156,7 +156,7 @@ namespace letsencrypt
 
         internal static void InstallCertificate(Target binding, string pfxFilename, Options options, out X509Store store, out X509Certificate2 certificate)
         {
-            store = OpenCertificateStore(options);
+            store = OpenCertificateStore(options.CertificateStore);
 
             Log.Information(R.Openedcertificatestore, store.Name);
             certificate = null;
@@ -189,12 +189,12 @@ namespace letsencrypt
             store.Close();
         }
 
-        protected static X509Store OpenCertificateStore(Options options)
+        public static X509Store OpenCertificateStore(string name)
         {
             X509Store store;
             try
             {
-                store = new X509Store(options.CertificateStore, StoreLocation.LocalMachine);
+                store = new X509Store(name, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadWrite);
             }
             catch (CryptographicException)

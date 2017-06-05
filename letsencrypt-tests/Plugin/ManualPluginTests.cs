@@ -80,14 +80,14 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
-            plugin.localPath = plugin.BaseDirectory;
+            plugin.localPath = Plugin.BaseDirectory;
             options.BaseUri = ProxyUrl("/");
             plugin.client = MockAcmeClient(options);
             var target = new Target
             {
                 PluginName = R.Manual,
                 Host = HTTPProxyServer,
-                WebRootPath = plugin.BaseDirectory
+                WebRootPath = Plugin.BaseDirectory
             };
             plugin.Install(target, options);
         }
@@ -99,7 +99,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = "localhost";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             plugin.localPath = rootPath;
             var targets = plugin.GetTargets(options);
 
@@ -125,7 +125,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
-            plugin.localPath = plugin.BaseDirectory;
+            plugin.localPath = Plugin.BaseDirectory;
             
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
@@ -146,7 +146,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             plugin.localPath = rootPath;
             
             var token = "this-is-a-test";
