@@ -17,7 +17,7 @@ namespace letsencrypt
 
         public override bool RequiresElevated => true;
 
-        private static Version _iisVersion = null;
+        private Version _iisVersion = null;
 
         private List<Target> targets;
 
@@ -76,6 +76,11 @@ namespace letsencrypt
             else
             {
                 GetTargetsForHostNames(options, hostNames.Split(',', ';', ' '));
+            }
+            if (targets.Count == 0)
+            {
+                Log.Warning(R.Nositeswereselected);
+                return false;
             }
             return true;
         }
@@ -372,7 +377,7 @@ namespace letsencrypt
                             if (!String.IsNullOrEmpty(binding.Host) && binding.Protocol == "http" &&
                                 !Regex.IsMatch(binding.Host, @"[^\u0000-\u007F]"))
                             {
-                                if (hosts.Where(h => h == binding.Host).Count() == 0)
+                                if (!hosts.Any(h => h == binding.Host))
                                 {
                                     hosts.Add(binding.Host);
                                 }

@@ -124,7 +124,7 @@ namespace letsencrypt
             while (values.Count == 0 && !options.Silent)
             {
                 Console.Write("\n" + message + ": ");
-                value = Console.ReadLine();
+                value = Console.ReadLine().Trim();
                 string[] entries = value.Split(", ;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 foreach (string v in entries)
                 {
@@ -199,7 +199,7 @@ namespace letsencrypt
 
         internal static string GetString(Dictionary<string, string> dict, string key, string defaultValue = null)
         {
-            if (dict.ContainsKey(key))
+            if (dict != null && dict.ContainsKey(key))
             {
                 return dict[key];
             }

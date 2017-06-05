@@ -108,7 +108,6 @@ namespace letsencrypt_tests
             {
                 PluginName = R.FTP
             };
-            var id = "/subscriptions/test-subscription-id/resourceGroups/Default/providers/Microsoft.Web/sites/test";
             plugin.hostName = HTTPProxyServer;
             Directory.CreateDirectory(Path.Combine(MockFtpServer.localPath, "site", "wwwroot"));
             plugin.Install(target, options);
@@ -122,8 +121,8 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(targets.Count, 1);
-            Assert.AreEqual(targets[0].PluginName, R.FTP);
+            Assert.AreEqual(1, targets.Count);
+            Assert.AreEqual(R.FTP, targets[0].PluginName);
         }
 
         [TestMethod()]

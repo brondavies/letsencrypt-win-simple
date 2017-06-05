@@ -197,8 +197,8 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(targets.Count, 1);
-            Assert.AreEqual(targets[0].PluginName, R.AzureWebApp);
+            Assert.AreEqual(1, targets.Count);
+            Assert.AreEqual(R.AzureWebApp, targets[0].PluginName);
         }
 
         [TestMethod()]

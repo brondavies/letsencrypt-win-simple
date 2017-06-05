@@ -22,10 +22,10 @@ namespace letsencrypt
     /// </summary>
     public abstract class Plugin
     {
-        private const string BLOCK_SEPARATOR = "\n******************************************************************************";
-        private const string INVALID_STATUS = "invalid";
-        private const string PENDING_STATUS = "pending";
-        private const string VALID_STATUS = "valid";
+        protected const string BLOCK_SEPARATOR = "\n******************************************************************************";
+        protected const string INVALID_STATUS = "invalid";
+        protected const string PENDING_STATUS = "pending";
+        protected const string VALID_STATUS = "valid";
 
         public AcmeClient client { get; set; }
         public List<string> AlternativeNames = null;

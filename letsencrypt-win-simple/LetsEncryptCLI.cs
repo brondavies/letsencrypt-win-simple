@@ -106,7 +106,7 @@ namespace LetsEncryptWinSimple
             {
                 Console.Write(R.Enterallalternativenamesseparatedbycommas);
                 Console.SetIn(new StreamReader(Console.OpenStandardInput(8192)));
-                var input = Console.ReadLine();
+                var input = Console.ReadLine().Trim();
                 string[] alternativeNames = input.Split(',');
 
                 if (alternativeNames.Length > 100)

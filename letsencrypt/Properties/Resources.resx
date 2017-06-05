@@ -593,4 +593,7 @@ Check in a browser to see if the answer file is being served correctly. If it is
   <data name="CertificatecreationfailedFilenotfound" xml:space="preserve">
     <value>Certificate creation failed.  File not found: {pfxFilename}</value>
   </data>
+  <data name="Nositeswereselected" xml:space="preserve">
+    <value>No sites were selected</value>
+  </data>
 </root>

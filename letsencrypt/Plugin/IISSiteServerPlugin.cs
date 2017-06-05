@@ -54,8 +54,8 @@ namespace letsencrypt
                         Console.WriteLine($"{target.SiteId}: {target.Host}");
                     }
                     Console.WriteLine(R.EnterallsiteIDsseparatedbycommas);
-                    Console.Write(R.IISSiteServerMenuOption2);
-                    var sanInput = Console.ReadLine();
+                    Console.WriteLine(R.IISSiteServerMenuOption2);
+                    var sanInput = LetsEncrypt.PromptForText(options, ": ");
                     if (sanInput.ToLower() == "s")
                     {
                         siteList.AddRange(targets);
@@ -81,6 +81,11 @@ namespace letsencrypt
                 if (hostCount > 100)
                 {
                     Log.Error(R.YouhavetoomanyhostsforaSancertificate);
+                    return false;
+                }
+                if (hostCount == 0)
+                {
+                    Log.Warning(R.Nositeswereselected);
                     return false;
                 }
             }
@@ -139,7 +144,7 @@ namespace letsencrypt
             foreach (var site in sites)
             {
                 var auth = Authorize(site, options);
-                if (auth.Status != "valid")
+                if (auth.Status != VALID_STATUS)
                 {
                     Log.Error(R.Allhostsunderallsitesneedtopassauthorizationbeforeyoucancontinue);
                     Environment.Exit(1);

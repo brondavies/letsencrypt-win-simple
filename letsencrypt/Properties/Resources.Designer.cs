@@ -992,6 +992,15 @@ namespace letsencrypt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No sites were selected.
+        /// </summary>
+        public static string Nositeswereselected {
+            get {
+                return ResourceManager.GetString("Nositeswereselected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opened certificate store {Name}.
         /// </summary>
         public static string Openedcertificatestore {
