@@ -89,7 +89,7 @@ namespace letsencrypt_tests
             {
                 PluginName = R.WebDAV,
                 Host = HTTPProxyServer,
-                WebRootPath = plugin.BaseDirectory
+                WebRootPath = Plugin.BaseDirectory
             };
             plugin.Install(target, options);
         }
@@ -146,7 +146,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             plugin.WebDAVPath = ProxyUrl(proxyWebDavUrl);
             
             var token = "this-is-a-test";
@@ -165,7 +165,7 @@ namespace letsencrypt_tests
             var token = "this-is-a-test";
             var webRoot = "/";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             
             plugin.DeleteAuthorization(options, rootPath + challengeLocation, token, webRoot, challengeLocation);
         }

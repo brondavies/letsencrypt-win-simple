@@ -115,7 +115,7 @@ namespace letsencrypt_tests
             var token = "this-is-a-test";
             var webRoot = "/";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             var challengeFile = $"{rootPath}{challengeLocation}".Replace('/', Path.DirectorySeparatorChar);
 
             Directory.CreateDirectory(Path.GetDirectoryName(challengeFile));
@@ -137,7 +137,7 @@ namespace letsencrypt_tests
                 PluginName = R.IISSiteServer,
                 Host = HTTPProxyServer,
                 SiteId = 0,
-                WebRootPath = plugin.BaseDirectory
+                WebRootPath = Plugin.BaseDirectory
             };
             plugin.SelectOptions(options);
             plugin.Install(target, options);
@@ -178,7 +178,7 @@ namespace letsencrypt_tests
             options.HideHttps = false;
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             var target = new Target
             {
                 PluginName = R.IIS,
@@ -197,7 +197,7 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             var token = "this-is-a-test";
-            var rootPath = plugin.BaseDirectory;
+            var rootPath = Plugin.BaseDirectory;
             var challengeFile = Path.Combine(rootPath, ".well-known", "acme-challenge", token);
             plugin.CreateAuthorizationFile(challengeFile, token);
             Assert.IsTrue(File.Exists(challengeFile));

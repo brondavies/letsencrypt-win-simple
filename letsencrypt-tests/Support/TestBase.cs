@@ -137,6 +137,30 @@ namespace letsencrypt_tests.Support
             return ($"http://{HTTPProxyServer}{url}");
         }
 
+        private bool Throws<E>(Action fn) where E : Exception
+        {
+            var result = false;
+            try
+            {
+                fn.Invoke();
+            }
+            catch (E)
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        protected void AssertThrows<E>(Action fn) where E : Exception
+        {
+            Assert.IsTrue(Throws<E>(fn), $"{fn} did not throw an exception of type {typeof(E)}");
+        }
+
+        protected void AssertDoesNotThrow<E>(Action fn) where E : Exception
+        {
+            Assert.IsFalse(Throws<E>(fn), $"{fn} threw an exception of type {typeof(E)}");
+        }
+
         protected static string RandomString(int length = 8, string prefix = "")
         {
             string rndchars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
