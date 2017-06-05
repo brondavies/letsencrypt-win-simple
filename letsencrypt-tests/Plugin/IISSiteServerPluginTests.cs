@@ -43,7 +43,9 @@ namespace letsencrypt_tests
             options = MockOptions();
             options.Plugin = R.IISSiteServer;
             options.San = true;
+            options.HideHttps = true;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Assert.IsTrue(plugin.RequiresElevated);
         }
 
         [TestMethod()]
@@ -53,6 +55,30 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             Assert.IsTrue(plugin.Validate(options));
+        }
+
+        [TestMethod()]
+        public void IISSiteServerPlugin_ValidateFailsTest()
+        {
+            IISSiteServerPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            var oldVersion = MockIISServerManager.MajorVersion;
+            MockIISServerManager.MajorVersion = 0;
+            Assert.IsFalse(plugin.Validate(options));
+            MockIISServerManager.MajorVersion = oldVersion;
+        }
+
+        [TestMethod()]
+        public void IISSiteServerPlugin_ValidateFails2Test()
+        {
+            IISSiteServerPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            MockIISServerManager.ReturnMockSites = false;
+
+            Assert.IsFalse(plugin.Validate(options));
+            MockIISServerManager.ReturnMockSites = true;
         }
 
         [TestMethod()]
@@ -73,6 +99,10 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             plugin.Validate(options);
             Assert.IsTrue(plugin.SelectOptions(options));
+
+            options.PluginConfig = "EmptyConfig.json";
+            plugin.Validate(options);
+            Assert.IsFalse(plugin.SelectOptions(options));
         }
 
         [TestMethod()]
@@ -119,13 +149,15 @@ namespace letsencrypt_tests
             IISSiteServerPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            options.BaseUri = ProxyUrl("/");
+            plugin.client = MockAcmeClient(options);
             plugin.SelectOptions(options);
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(targets.Count, 1);
-            Assert.AreEqual(targets[0].PluginName, R.IISSiteServer);
-            Assert.AreEqual(targets[0].Host, null);
-            Assert.AreEqual(targets[0].SiteId, 0);
+            Assert.AreEqual(1, targets.Count);
+            Assert.AreEqual(R.IISSiteServer, targets[0].PluginName);
+            Assert.AreEqual("0", targets[0].Host);
+            Assert.AreEqual(0, targets[0].SiteId);
         }
 
         [TestMethod()]
@@ -143,6 +175,7 @@ namespace letsencrypt_tests
             IISSiteServerPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            options.HideHttps = false;
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
             var rootPath = plugin.BaseDirectory;

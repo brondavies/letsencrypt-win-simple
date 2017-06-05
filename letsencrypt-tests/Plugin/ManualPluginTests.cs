@@ -103,10 +103,10 @@ namespace letsencrypt_tests
             plugin.localPath = rootPath;
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(targets.Count, 1);
-            Assert.AreEqual(targets[0].PluginName, R.Manual);
-            Assert.AreEqual(targets[0].Host, "localhost");
-            Assert.AreEqual(targets[0].WebRootPath, rootPath);
+            Assert.AreEqual(1, targets.Count);
+            Assert.AreEqual(R.Manual, targets[0].PluginName);
+            Assert.AreEqual("localhost", targets[0].Host);
+            Assert.AreEqual(rootPath, targets[0].WebRootPath);
         }
 
         [TestMethod()]

@@ -1,4 +1,4 @@
 {
-  "host_name": "test.example.com",
+  "host_name": "localhost",
   "local_path":  "."
 }

@@ -104,10 +104,10 @@ namespace letsencrypt_tests
             var rootPath = plugin.WebDAVPath = ProxyUrl(proxyWebDavUrl);
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(targets.Count, 1);
-            Assert.AreEqual(targets[0].PluginName, R.WebDAV);
-            Assert.AreEqual(targets[0].Host, "localhost");
-            Assert.AreEqual(targets[0].WebRootPath, rootPath);
+            Assert.AreEqual(1, targets.Count, 1);
+            Assert.AreEqual(R.WebDAV, targets[0].PluginName);
+            Assert.AreEqual("localhost", targets[0].Host);
+            Assert.AreEqual(rootPath, targets[0].WebRootPath);
         }
 
         [TestMethod()]

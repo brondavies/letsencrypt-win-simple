@@ -42,7 +42,9 @@ namespace letsencrypt_tests
             plugin = new IISPlugin();
             options = MockOptions();
             options.Plugin = R.IIS;
+            options.HideHttps = true;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Assert.IsTrue(plugin.RequiresElevated);
         }
 
         [TestMethod()]
@@ -52,6 +54,30 @@ namespace letsencrypt_tests
             Options options;
             CreatePlugin(out plugin, out options);
             Assert.IsTrue(plugin.Validate(options));
+        }
+
+        [TestMethod()]
+        public void IISPlugin_ValidateFailsTest()
+        {
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            var oldVersion = MockIISServerManager.MajorVersion;
+            MockIISServerManager.MajorVersion = 0;
+            Assert.IsFalse(plugin.Validate(options));
+            MockIISServerManager.MajorVersion = oldVersion;
+        }
+        
+        [TestMethod()]
+        public void IISPlugin_ValidateFails2Test()
+        {
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            MockIISServerManager.ReturnMockSites = false;
+
+            Assert.IsFalse(plugin.Validate(options));
+            MockIISServerManager.ReturnMockSites = true;
         }
 
         [TestMethod()]
@@ -72,6 +98,20 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             plugin.Validate(options);
             Assert.IsTrue(plugin.SelectOptions(options));
+        }
+
+        [TestMethod()]
+        public void IISPlugin_SelectOptionsFailsTest()
+        {
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+
+            MockIISServerManager.ReturnMockSites = false;
+            options.PluginConfig = "EmptyConfig.json";
+            plugin.Validate(options);
+            Assert.IsFalse(plugin.SelectOptions(options));
+            MockIISServerManager.ReturnMockSites = true;
         }
 
         [TestMethod()]
@@ -119,9 +159,9 @@ namespace letsencrypt_tests
             CreatePlugin(out plugin, out options);
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(targets.Count, 1);
-            Assert.AreEqual(targets[0].PluginName, R.IIS);
-            Assert.AreEqual(targets[0].Host, "localhost");
+            Assert.AreEqual(1, targets.Count);
+            Assert.AreEqual(R.IIS, targets[0].PluginName);
+            Assert.AreEqual("localhost", targets[0].Host);
         }
 
         [TestMethod()]

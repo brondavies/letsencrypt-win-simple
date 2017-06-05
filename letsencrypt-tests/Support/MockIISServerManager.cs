@@ -11,13 +11,19 @@ namespace letsencrypt_tests.Support
 {
     internal class MockIISServerManager : IIISServerManager
     {
+        internal static int MajorVersion = 8;
+        internal static int MinorVersion = 0;
+        internal static bool ReturnMockSites = true;
+
         private IEnumerable<IIISSite> FakeSites
         {
             get
             {
                 var mockSite = new Mock<IIISSite>();
-                mockSite.Setup((m) => m.Id).Returns(0);
-                mockSite.Setup((m) => m.Bindings).Returns(FakeBindings);
+                mockSite.Setup(m => m.Id).Returns(0);
+                mockSite.Setup(m => m.Bindings).Returns(FakeBindings);
+                mockSite.Setup(m => m.Name).Returns("localhost");
+                mockSite.Setup(m => m.GetPhysicalPath()).Returns(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
                 return new[] { mockSite.Object };
             }
@@ -74,7 +80,13 @@ namespace letsencrypt_tests.Support
         {
             get
             {
-                return FakeSites;
+                if (ReturnMockSites)
+                {
+                    return FakeSites;
+                }else
+                {
+                    return new IIISSite[] { };
+                }
             }
         }
 
@@ -88,7 +100,7 @@ namespace letsencrypt_tests.Support
 
         public Version GetVersion()
         {
-            return new Version(8, 0);
+            return new Version(MajorVersion, MinorVersion);
         }
     }
 }
