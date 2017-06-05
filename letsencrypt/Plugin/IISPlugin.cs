@@ -424,6 +424,7 @@ namespace letsencrypt
             var webConfigPath = Path.Combine(directory, "web.config");
             
             Log.Information(R.WritingWebConfig, webConfigPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(webConfigPath));
             File.Copy(Path.Combine(BaseDirectory, "web_config.xml"), webConfigPath, true);
         }
 

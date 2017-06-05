@@ -129,6 +129,7 @@ namespace letsencrypt_tests
 
             Directory.CreateDirectory(Path.GetDirectoryName(challengeFile));
             File.WriteAllText(challengeFile, token);
+            options.CleanupFolders = true;
             plugin.DeleteAuthorization(options, rootPath + challengeLocation, token, webRoot, challengeLocation);
             Assert.IsFalse(File.Exists(challengeFile));
         }
@@ -139,6 +140,26 @@ namespace letsencrypt_tests
             IISPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            options.BaseUri = ProxyUrl("/");
+            plugin.client = MockAcmeClient(options);
+            var target = new Target
+            {
+                PluginName = R.IIS,
+                Host = HTTPProxyServer,
+                SiteId = 0,
+                WebRootPath = plugin.BaseDirectory
+            };
+            plugin.Install(target, options);
+        }
+
+        [TestMethod()]
+        public void IISPlugin_InstallCentralSSLTest()
+        {
+            IISPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            options.CentralSsl = true;
+            options.CentralSslStore = plugin.BaseDirectory;
             options.BaseUri = ProxyUrl("/");
             plugin.client = MockAcmeClient(options);
             var target = new Target
