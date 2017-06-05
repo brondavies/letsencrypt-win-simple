@@ -22,7 +22,6 @@ namespace letsencrypt
         private Dictionary<string, string> config;
 
         private string access_token;
-        public string hostName;
         public string subscriptionId;
         public JToken webApp;
         private string webAppName;
