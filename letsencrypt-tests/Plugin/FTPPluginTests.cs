@@ -53,6 +53,7 @@ namespace letsencrypt_tests
             FTPPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            Assert.IsFalse(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 
@@ -106,11 +107,15 @@ namespace letsencrypt_tests
             plugin.client = MockAcmeClient(options);
             var target = new Target
             {
-                PluginName = R.FTP
+                Host = HTTPProxyServer,
+                PluginName = R.FTP,
+                WebRootPath = $"{FTPServerUrl}/site/wwwroot/"
             };
             plugin.hostName = HTTPProxyServer;
             Directory.CreateDirectory(Path.Combine(MockFtpServer.localPath, "site", "wwwroot"));
-            plugin.Install(target, options);
+            plugin.Renew(target, options);
+            plugin.FtpCredentials = new System.Net.NetworkCredential("test", "test");
+            plugin.Renew(target, options);
         }
 
         [TestMethod()]

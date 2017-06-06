@@ -48,7 +48,7 @@ namespace letsencrypt_tests.Support
 
         public bool AllowInsecureSSLRequests = false;
 
-        protected string FTPServerUrl { get { return $"ftp://127.0.0.1:{Settings.FTPProxyPort}"; } }
+        protected string FTPServerUrl => $"ftp://127.0.0.1:{Settings.FTPProxyPort}";
 
         [ClassInitialize]
         public static void FeatureTestClassInitialize(TestContext context)

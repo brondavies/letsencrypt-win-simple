@@ -6,10 +6,8 @@ using letsencrypt.Support;
 
 namespace letsencrypt
 {
-    public class ManualPlugin : Plugin
+    public class ManualPlugin : IISPlugin
     {
-        private Dictionary<string, string> config;
-
         public string hostName;
 
         public string localPath;

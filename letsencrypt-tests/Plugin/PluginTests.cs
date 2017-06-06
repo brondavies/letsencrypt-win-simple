@@ -46,6 +46,7 @@ namespace letsencrypt_tests
 
             options.Script = batfile;
             options.ScriptParameters = "";
+            System.Threading.Thread.Sleep(1000);
             Plugin.RunScript(target, "test.pfx", store, certificate, options);
         }
 

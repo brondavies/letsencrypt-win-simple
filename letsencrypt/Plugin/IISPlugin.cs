@@ -115,6 +115,11 @@ namespace letsencrypt
             Auto(target, options);
         }
 
+        public override void Renew(Target target, Options options)
+        {
+            Auto(target, options);
+        }
+
         public override string Auto(Target target, Options options)
         {
             string pfxFilename = base.Auto(target, options);
@@ -584,11 +589,6 @@ namespace letsencrypt
                 }
             }
             return _iisVersion;
-        }
-
-        public override void Renew(Target target, Options options)
-        {
-            Auto(target, options);
         }
 
         public override void DeleteAuthorization(Options options, string answerPath, string token, string webRootPath, string filePath)

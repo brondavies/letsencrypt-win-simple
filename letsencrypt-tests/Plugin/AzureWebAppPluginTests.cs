@@ -57,6 +57,7 @@ namespace letsencrypt_tests
             AzureWebAppPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            Assert.IsFalse(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 
@@ -186,7 +187,7 @@ namespace letsencrypt_tests
                 })
             });
             Directory.CreateDirectory(Path.Combine(MockFtpServer.localPath, "site", "wwwroot"));
-            plugin.Install(target, options);
+            plugin.Renew(target, options);
         }
 
         [TestMethod()]
