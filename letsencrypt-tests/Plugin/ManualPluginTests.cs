@@ -50,6 +50,7 @@ namespace letsencrypt_tests
             ManualPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            Assert.IsTrue(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 
@@ -89,7 +90,7 @@ namespace letsencrypt_tests
                 Host = HTTPProxyServer,
                 WebRootPath = Plugin.BaseDirectory
             };
-            plugin.Install(target, options);
+            plugin.Renew(target, options);
         }
 
         [TestMethod()]

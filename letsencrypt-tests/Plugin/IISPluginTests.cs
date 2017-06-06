@@ -44,7 +44,6 @@ namespace letsencrypt_tests
             options.Plugin = R.IIS;
             options.HideHttps = true;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assert.IsTrue(plugin.RequiresElevated);
         }
 
         [TestMethod()]
@@ -53,6 +52,7 @@ namespace letsencrypt_tests
             IISPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            Assert.IsTrue(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 

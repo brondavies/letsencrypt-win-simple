@@ -205,7 +205,7 @@ namespace letsencrypt
 
             try
             {
-                if (options.CleanupFolders == true)
+                if (options.CleanupFolders)
                 {
                     var folderPath = answerPath.Remove((answerPath.Length - token.Length), token.Length);
                     var files = GetFiles(folderPath);

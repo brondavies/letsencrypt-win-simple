@@ -45,7 +45,6 @@ namespace letsencrypt_tests
             options.San = true;
             options.HideHttps = true;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assert.IsTrue(plugin.RequiresElevated);
         }
 
         [TestMethod()]
@@ -54,6 +53,7 @@ namespace letsencrypt_tests
             IISSiteServerPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            Assert.IsTrue(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 
@@ -140,7 +140,28 @@ namespace letsencrypt_tests
                 WebRootPath = Plugin.BaseDirectory
             };
             plugin.SelectOptions(options);
-            plugin.Install(target, options);
+            plugin.Renew(target, options);
+        }
+
+        [TestMethod()]
+        public void IISSiteServerPlugin_InstallCentralSSLTest()
+        {
+            IISSiteServerPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            options.BaseUri = ProxyUrl("/");
+            options.CentralSsl = true;
+            options.CentralSslStore = Plugin.BaseDirectory;
+            plugin.client = MockAcmeClient(options);
+            var target = new Target
+            {
+                PluginName = R.IISSiteServer,
+                Host = HTTPProxyServer,
+                SiteId = 0,
+                WebRootPath = Plugin.BaseDirectory
+            };
+            plugin.SelectOptions(options);
+            plugin.Renew(target, options);
         }
 
         [TestMethod()]

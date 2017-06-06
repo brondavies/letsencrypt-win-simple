@@ -42,6 +42,7 @@ namespace letsencrypt_tests
         {
             plugin = new WebDAVPlugin();
             plugin.webDAVClientType = typeof(MockWebDAVClient);
+            plugin.WebDAVPath = ProxyUrl("/");
             options = MockOptions();
             options.Plugin = R.WebDAV;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -53,6 +54,7 @@ namespace letsencrypt_tests
             WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            Assert.IsFalse(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 
@@ -91,7 +93,9 @@ namespace letsencrypt_tests
                 Host = HTTPProxyServer,
                 WebRootPath = Plugin.BaseDirectory
             };
-            plugin.Install(target, options);
+            plugin.Renew(target, options);
+            plugin.WebDAVCredentials = new System.Net.NetworkCredential("test", "test");
+            plugin.Renew(target, options);
         }
 
         [TestMethod()]
@@ -166,6 +170,7 @@ namespace letsencrypt_tests
             var webRoot = "/";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
             var rootPath = Plugin.BaseDirectory;
+            options.CleanupFolders = true;
             
             plugin.DeleteAuthorization(options, rootPath + challengeLocation, token, webRoot, challengeLocation);
         }

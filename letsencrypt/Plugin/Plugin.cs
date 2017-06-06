@@ -524,9 +524,7 @@ namespace letsencrypt
         /// </summary>
         /// <param name="answerPath">where the answerFile should be located</param>
         /// <param name="fileContents">the contents of the file to write</param>
-        public virtual void CreateAuthorizationFile(string answerPath, string fileContents)
-        {
-        }
+        public virtual void CreateAuthorizationFile(string answerPath, string fileContents) { }
 
         /// <summary>
         /// Should delete any authorizations
@@ -535,8 +533,6 @@ namespace letsencrypt
         /// <param name="token">the token</param>
         /// <param name="webRootPath">the website root path</param>
         /// <param name="filePath">the file path for the authorization file</param>
-        public virtual void DeleteAuthorization(Options options, string answerPath, string token, string webRootPath, string filePath)
-        {
-        }
+        public abstract void DeleteAuthorization(Options options, string answerPath, string token, string webRootPath, string filePath);
     }
 }
