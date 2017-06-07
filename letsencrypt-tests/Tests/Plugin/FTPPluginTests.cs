@@ -97,7 +97,7 @@ namespace letsencrypt_tests
                 plugin.SelectOptions(options);
             });
         }
-
+        
         [TestMethod]
         public void FTPPlugin_DeleteAuthorizationTest()
         {
@@ -177,7 +177,7 @@ namespace letsencrypt_tests
                 WebRootPath = rootPath
             };
             plugin.BeforeAuthorize(target, rootPath + challengeLocation, token);
-            var webconfigFile = Path.Combine(MockFtpServer.localPath, "site", "wwwroot",".well-known", "acme-challenge", "web.config");
+            var webconfigFile = Path.Combine(MockFtpServer.localPath, "site", "wwwroot", ".well-known", "acme-challenge", "web.config");
             Assert.IsTrue(File.Exists(webconfigFile));
         }
 

@@ -1,8 +1,14 @@
 version: 1.0.{build}
+
 install:
 - nuget restore letsencrypt-win-simple.sln
 - cp -R packages letsencrypt-win-simple
+
 configuration: Release
+
+before_build:
+  - echo Building branch: %APPVEYOR_REPO_BRANCH%
+
 build:
   project: letsencrypt-win-simple.sln
   verbosity: minimal
@@ -13,7 +19,7 @@ test_script:
 
 after_test:
 - ps: |
-    If ($Env:APPVEYOR_REPO_BRANCH -eq "master")
+    if ($Env:APPVEYOR_REPO_BRANCH -eq "master")
     {
       SET PATH=C:\Python34;C:\Python34\Scripts;%PATH%
       pip install codecov
@@ -22,7 +28,7 @@ after_test:
 
 after_build:
 - ps: |
-    If ($Env:APPVEYOR_REPO_BRANCH -eq "master")
+    if ($Env:APPVEYOR_REPO_BRANCH -eq "master")
     {
       pushd letsencrypt-win-simple\bin\release\
       7z a letsencrypt-win-simple.zip letsencryptcli.exe

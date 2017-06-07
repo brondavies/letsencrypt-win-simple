@@ -121,9 +121,8 @@ namespace letsencrypt_tests
             plugin.Validate(options);
             Assert.IsTrue(plugin.SelectOptions(options));
         }
-
-        //[TestMethod]
-        //TODO: Fix this test so it doesn't fail during automated testing
+        
+        [TestMethod]
         public void AzureWebAppPlugin_DeleteAuthorizationTest()
         {
             AzureWebAppPlugin plugin;
