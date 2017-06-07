@@ -1371,6 +1371,15 @@ namespace letsencrypt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uploaded files may not have been removed..
+        /// </summary>
+        public static string Uploadedfilesmaynotbecleanedup {
+            get {
+                return ResourceManager.GetString("Uploadedfilesmaynotbecleanedup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload Status {StatusDescription}.
         /// </summary>
         public static string UploadStatusDescription {

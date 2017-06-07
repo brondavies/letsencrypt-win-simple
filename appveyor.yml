@@ -7,7 +7,7 @@ install:
 configuration: Release
 
 before_build:
-  - echo Building branch: %APPVEYOR_REPO_BRANCH%
+  - cmd: echo Building branch %APPVEYOR_REPO_BRANCH%
 
 build:
   project: letsencrypt-win-simple.sln

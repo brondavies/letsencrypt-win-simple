@@ -386,6 +386,11 @@ namespace letsencrypt_tests.Support
         [TestCleanup]
         public virtual void Cleanup()
         {
+        }
+
+        [ClassCleanup]
+        public virtual void AfterAll()
+        {
             if (StartFTPProxy)
             {
                 MockFtpServer.Stop();
