@@ -213,16 +213,31 @@ namespace letsencrypt
             }
         }
 
-        private void Delete(string ftpPath, FileType fileType)
+        private void Delete(string ftpPath, FileType fileType, bool isRetry = false)
         {
             FtpWebRequest request = CreateFTPRequest(ftpPath, 
                 fileType == FileType.File
                 ? WebRequestMethods.Ftp.DeleteFile
                 : WebRequestMethods.Ftp.RemoveDirectory);
-
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            var success = false;
+            try
             {
-                Log.Information(R.DeleteStatusDescription, response.StatusDescription);
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                {
+                    Log.Information(R.DeleteStatusDescription, response.StatusDescription);
+                }
+                success = true;
+            }
+            catch
+            {
+                if (isRetry)
+                {
+                    Log.Warning(R.Uploadedfilesmaynotbecleanedup);
+                }
+            }
+            if (!success && !isRetry)
+            {
+                Delete(ftpPath, fileType, true);
             }
         }
 

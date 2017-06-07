@@ -51,7 +51,7 @@ namespace letsencrypt_tests
             });
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_ValidateTest()
         {
             AzureWebAppPlugin plugin;
@@ -61,7 +61,20 @@ namespace letsencrypt_tests
             Assert.IsTrue(plugin.Validate(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
+        public void AzureWebAppPlugin_ValidateFailsTest()
+        {
+            AzureWebAppPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            options.PluginConfig = "missingfile.json";
+            AssertThrows<FileNotFoundException>(() =>
+            {
+                plugin.Validate(options);
+            });
+        }
+
+        [TestMethod]
         public void AzureWebAppPlugin_GetSelectedTest()
         {
             AzureWebAppPlugin plugin;
@@ -71,7 +84,7 @@ namespace letsencrypt_tests
             Assert.IsFalse(plugin.GetSelected(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false)));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_SelectOptionsTest()
         {
             AzureWebAppPlugin plugin;
@@ -108,9 +121,8 @@ namespace letsencrypt_tests
             plugin.Validate(options);
             Assert.IsTrue(plugin.SelectOptions(options));
         }
-
-        //[TestMethod()]
-        //TODO: Fix this test so it doesn't fail during automated testing
+        
+        [TestMethod]
         public void AzureWebAppPlugin_DeleteAuthorizationTest()
         {
             AzureWebAppPlugin plugin;
@@ -129,7 +141,7 @@ namespace letsencrypt_tests
             Assert.IsFalse(File.Exists(challengeFile));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_InstallTest()
         {
             AzureWebAppPlugin plugin;
@@ -143,7 +155,7 @@ namespace letsencrypt_tests
                 PluginName = R.AzureWebApp
             };
             var id = "/subscriptions/test-subscription-id/resourceGroups/Default/providers/Microsoft.Web/sites/test";
-            plugin.hostName = "localhost:" + Settings.HTTPProxyPort;
+            plugin.hostName = "localhost:" + Support.Settings.HTTPProxyPort;
             plugin.webApp = new JObject
             {
                 ["id"] = id,
@@ -190,7 +202,7 @@ namespace letsencrypt_tests
             plugin.Renew(target, options);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_GetTargetsTest()
         {
             AzureWebAppPlugin plugin;
@@ -202,7 +214,7 @@ namespace letsencrypt_tests
             Assert.AreEqual(R.AzureWebApp, targets[0].PluginName);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_PrintMenuTest()
         {
             AzureWebAppPlugin plugin;
@@ -211,7 +223,7 @@ namespace letsencrypt_tests
             plugin.PrintMenu();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_BeforeAuthorizeTest()
         {
             AzureWebAppPlugin plugin;
@@ -229,11 +241,11 @@ namespace letsencrypt_tests
                 WebRootPath = rootPath
             };
             plugin.BeforeAuthorize(target, rootPath + challengeLocation, token);
-            var webconfigFile = Path.Combine(MockFtpServer.localPath, "site", "wwwroot",".well-known", "acme-challenge", "web.config");
+            var webconfigFile = Path.Combine(MockFtpServer.localPath, "site", "wwwroot", ".well-known", "acme-challenge", "web.config");
             Assert.IsTrue(File.Exists(webconfigFile));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AzureWebAppPlugin_CreateAuthorizationFileTest()
         {
             AzureWebAppPlugin plugin;

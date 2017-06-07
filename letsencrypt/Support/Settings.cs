@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 
 namespace letsencrypt.Support
 {
-    internal class Settings
+    public class Settings
     {
         private SettingsObject values;
         private string configPath;
-        private string settingsPath
+        public string settingsPath
         {
             get
             {

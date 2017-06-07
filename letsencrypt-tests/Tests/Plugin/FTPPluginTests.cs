@@ -14,6 +14,7 @@ namespace letsencrypt_tests
     [DeploymentItem("ACMESharp.PKI.Providers.OpenSslLib32.dll")]
     [DeploymentItem("ACMESharp.PKI.Providers.OpenSslLib64.dll")]
     [DeploymentItem("FTP.json")]
+    [DeploymentItem("FTP-without-path.json")]
     [DeploymentItem("localhost22233-all.pfx")]
     [DeploymentItem("ManagedOpenSsl.dll")]
     [DeploymentItem("ManagedOpenSsl64.dll")]
@@ -47,7 +48,7 @@ namespace letsencrypt_tests
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_ValidateTest()
         {
             FTPPlugin plugin;
@@ -57,7 +58,7 @@ namespace letsencrypt_tests
             Assert.IsTrue(plugin.Validate(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_GetSelectedTest()
         {
             FTPPlugin plugin;
@@ -67,7 +68,7 @@ namespace letsencrypt_tests
             Assert.IsFalse(plugin.GetSelected(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false)));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_SelectOptionsTest()
         {
             FTPPlugin plugin;
@@ -77,8 +78,27 @@ namespace letsencrypt_tests
             Assert.IsTrue(plugin.SelectOptions(options));
         }
 
-        //[TestMethod()]
-        //TODO: Fix this test so it doesn't fail during automated testing
+        [TestMethod]
+        public void FTPPlugin_SelectOptionsFailsTest()
+        {
+            FTPPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+            options.PluginConfig = "EmptyConfig.json";
+            plugin.Validate(options);
+            AssertThrows<ArgumentNullException>(() =>
+            {
+                plugin.SelectOptions(options);
+            });
+            options.PluginConfig = "FTP-without-path.json";
+            plugin.Validate(options);
+            AssertThrows<ArgumentNullException>(() =>
+            {
+                plugin.SelectOptions(options);
+            });
+        }
+        
+        [TestMethod]
         public void FTPPlugin_DeleteAuthorizationTest()
         {
             FTPPlugin plugin;
@@ -91,13 +111,13 @@ namespace letsencrypt_tests
             File.WriteAllText(challengeFile, token);
             var rootPath = $"{FTPServerUrl}{webRoot}";
             CreatePlugin(out plugin, out options);
-            options.CleanupFolders = false;
+            options.CleanupFolders = true;
             plugin.FtpCredentials = new System.Net.NetworkCredential("testuser", "testpassword");
             plugin.DeleteAuthorization(options, rootPath + challengeLocation, token, webRoot, challengeLocation);
             Assert.IsFalse(File.Exists(challengeFile));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_InstallTest()
         {
             FTPPlugin plugin;
@@ -118,7 +138,7 @@ namespace letsencrypt_tests
             plugin.Renew(target, options);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_GetTargetsTest()
         {
             FTPPlugin plugin;
@@ -130,7 +150,7 @@ namespace letsencrypt_tests
             Assert.AreEqual(R.FTP, targets[0].PluginName);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_PrintMenuTest()
         {
             FTPPlugin plugin;
@@ -139,7 +159,7 @@ namespace letsencrypt_tests
             plugin.PrintMenu();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_BeforeAuthorizeTest()
         {
             FTPPlugin plugin;
@@ -157,11 +177,11 @@ namespace letsencrypt_tests
                 WebRootPath = rootPath
             };
             plugin.BeforeAuthorize(target, rootPath + challengeLocation, token);
-            var webconfigFile = Path.Combine(MockFtpServer.localPath, "site", "wwwroot",".well-known", "acme-challenge", "web.config");
+            var webconfigFile = Path.Combine(MockFtpServer.localPath, "site", "wwwroot", ".well-known", "acme-challenge", "web.config");
             Assert.IsTrue(File.Exists(webconfigFile));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FTPPlugin_CreateAuthorizationFileTest()
         {
             FTPPlugin plugin;

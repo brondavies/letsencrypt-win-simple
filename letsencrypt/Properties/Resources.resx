@@ -573,7 +573,7 @@ Check in a browser to see if the answer file is being served correctly. If it is
     <value>Deleting existing task {taskName} from Windows Task Scheduler.</value>
   </data>
   <data name="DoyouwanttoreplacetheexistingtaskName" xml:space="preserve">
-    <value>Do you want to replace the existing {taskName} task?</value>
+    <value>Do you want to replace the existing {0} task?</value>
   </data>
   <data name="Doyouwanttospecifytheuserthetaskwillrunas" xml:space="preserve">
     <value>Do you want to specify the user the task will run as?</value>
@@ -595,5 +595,8 @@ Check in a browser to see if the answer file is being served correctly. If it is
   </data>
   <data name="Nositeswereselected" xml:space="preserve">
     <value>No sites were selected</value>
+  </data>
+  <data name="Uploadedfilesmaynotbecleanedup" xml:space="preserve">
+    <value>Uploaded files may not have been removed.</value>
   </data>
 </root>

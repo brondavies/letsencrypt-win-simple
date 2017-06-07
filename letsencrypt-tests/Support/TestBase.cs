@@ -386,14 +386,13 @@ namespace letsencrypt_tests.Support
         [TestCleanup]
         public virtual void Cleanup()
         {
-            if (StartFTPProxy)
-            {
-                MockFtpServer.Stop();
-            }
-            if (StartHTTPProxy)
-            {
-                MockHttpServer.Stop();
-            }
+        }
+
+        [AssemblyCleanup]
+        public static void AfterAll()
+        {
+            MockFtpServer.Stop();
+            MockHttpServer.Stop();
         }
     }
 }

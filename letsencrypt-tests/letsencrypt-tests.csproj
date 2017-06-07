@@ -153,13 +153,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="LetsEncryptTests.cs" />
-    <Compile Include="Plugin\FTPPluginTests.cs" />
-    <Compile Include="Plugin\AzureWebAppPluginTests.cs" />
-    <Compile Include="Plugin\IISPluginTests.cs" />
-    <Compile Include="Plugin\IISSiteServerPluginTests.cs" />
-    <Compile Include="Plugin\PluginTests.cs" />
-    <Compile Include="Plugin\WebDAVPluginTests.cs" />
-    <Compile Include="Plugin\ManualPluginTests.cs" />
+    <Compile Include="Tests\LetsEncryptTests.cs" />
+    <Compile Include="Tests\ObjectExtensionsTests.cs" />
+    <Compile Include="Tests\Plugin\FTPPluginTests.cs" />
+    <Compile Include="Tests\Plugin\AzureWebAppPluginTests.cs" />
+    <Compile Include="Tests\Plugin\IISPluginTests.cs" />
+    <Compile Include="Tests\Plugin\IISSiteServerPluginTests.cs" />
+    <Compile Include="Tests\Plugin\PluginTests.cs" />
+    <Compile Include="Tests\Plugin\WebDAVPluginTests.cs" />
+    <Compile Include="Tests\Plugin\ManualPluginTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\CertificateCreator.cs" />
     <Compile Include="Support\HttpRequestEventHandlerExtensions.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Support\publishData.cs" />
     <Compile Include="Support\Settings.cs" />
     <Compile Include="Support\TestBase.cs" />
+    <Compile Include="Tests\SettingsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\letsencrypt\letsencrypt.csproj">
@@ -193,6 +196,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="FTP.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="FTP-without-path.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="localhost22233-all.pfx">

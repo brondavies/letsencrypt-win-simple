@@ -15,7 +15,7 @@ namespace letsencrypt_tests
     [DeploymentItem("localhost22233-all.pfx")]
     [DeploymentItem("ManagedOpenSsl.dll")]
     [DeploymentItem("ManagedOpenSsl64.dll")]
-    [DeploymentItem("Manual.json")]
+    [DeploymentItem("WebDAV.json")]
     [DeploymentItem("Registration")]
     [DeploymentItem("Signer")]
     [DeploymentItem("test-cert.der")]
@@ -25,8 +25,10 @@ namespace letsencrypt_tests
     [DeploymentItem("x64\\ssleay32.dll", "x64")]
     [DeploymentItem("x86\\libeay32.dll", "x86")]
     [DeploymentItem("x86\\ssleay32.dll", "x86")]
-    public class ManualPluginTests : TestBase
+    public class WebDAVPluginTests : TestBase
     {
+        private string proxyWebDavUrl = "/webdav/";
+
         [TestInitialize]
         public override void Initialize()
         {
@@ -36,125 +38,141 @@ namespace letsencrypt_tests
             base.Initialize();
         }
 
-        private void CreatePlugin(out ManualPlugin plugin, out Options options)
+        private void CreatePlugin(out WebDAVPlugin plugin, out Options options)
         {
-            plugin = new ManualPlugin();
+            plugin = new WebDAVPlugin();
+            plugin.webDAVClientType = typeof(MockWebDAVClient);
+            plugin.WebDAVPath = ProxyUrl("/");
             options = MockOptions();
-            options.Plugin = R.Manual;
+            options.Plugin = R.WebDAV;
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
-        [TestMethod()]
-        public void ManualPlugin_ValidateTest()
+        [TestMethod]
+        public void WebDAVPlugin_ValidateTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
-            Assert.IsTrue(plugin.RequiresElevated);
+            Assert.IsFalse(plugin.RequiresElevated);
             Assert.IsTrue(plugin.Validate(options));
         }
 
-        [TestMethod()]
-        public void ManualPlugin_GetSelectedTest()
+        [TestMethod]
+        public void WebDAVPlugin_GetSelectedTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
-            Assert.IsTrue(plugin.GetSelected(new ConsoleKeyInfo('m', ConsoleKey.M, false, false, false)));
+            Assert.IsTrue(plugin.GetSelected(new ConsoleKeyInfo('w', ConsoleKey.W, false, false, false)));
             Assert.IsFalse(plugin.GetSelected(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false)));
         }
 
-        [TestMethod()]
-        public void ManualPlugin_SelectOptionsTest()
+        [TestMethod]
+        public void WebDAVPlugin_SelectOptionsTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
+            plugin.WebDAVPath = ProxyUrl(proxyWebDavUrl);
             plugin.Validate(options);
             Assert.IsTrue(plugin.SelectOptions(options));
         }
         
-        [TestMethod()]
-        public void ManualPlugin_InstallTest()
+        [TestMethod]
+        public void WebDAVPlugin_InstallTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
-            plugin.hostName = HTTPProxyServer;
-            plugin.localPath = Plugin.BaseDirectory;
-            options.BaseUri = ProxyUrl("/");
+            options.BaseUri = ProxyUrl(proxyWebDavUrl);
             plugin.client = MockAcmeClient(options);
             var target = new Target
             {
-                PluginName = R.Manual,
+                PluginName = R.WebDAV,
                 Host = HTTPProxyServer,
                 WebRootPath = Plugin.BaseDirectory
             };
             plugin.Renew(target, options);
+            plugin.WebDAVCredentials = new System.Net.NetworkCredential("test", "test");
+            plugin.Renew(target, options);
         }
 
-        [TestMethod()]
-        public void ManualPlugin_GetTargetsTest()
+        [TestMethod]
+        public void WebDAVPlugin_GetTargetsTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = "localhost";
-            var rootPath = Plugin.BaseDirectory;
-            plugin.localPath = rootPath;
+            var rootPath = plugin.WebDAVPath = ProxyUrl(proxyWebDavUrl);
             var targets = plugin.GetTargets(options);
 
-            Assert.AreEqual(1, targets.Count);
-            Assert.AreEqual(R.Manual, targets[0].PluginName);
+            Assert.AreEqual(1, targets.Count, 1);
+            Assert.AreEqual(R.WebDAV, targets[0].PluginName);
             Assert.AreEqual("localhost", targets[0].Host);
             Assert.AreEqual(rootPath, targets[0].WebRootPath);
         }
 
-        [TestMethod()]
-        public void ManualPlugin_PrintMenuTest()
+        [TestMethod]
+        public void WebDAVPlugin_PrintMenuTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.PrintMenu();
         }
 
-        [TestMethod()]
-        public void ManualPlugin_BeforeAuthorizeTest()
+        [TestMethod]
+        public void WebDAVPlugin_BeforeAuthorizeTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
-            plugin.localPath = Plugin.BaseDirectory;
             
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
-            var rootPath = $"{plugin.localPath}";
+            var rootPath = plugin.WebDAVPath = ProxyUrl(proxyWebDavUrl);
             var target = new Target
             {
-                PluginName = R.Manual,
-                Host = plugin.hostName,
+                PluginName = R.WebDAV,
+                Host = "localhost",
                 WebRootPath = rootPath
             };
             plugin.BeforeAuthorize(target, rootPath + challengeLocation, token);
         }
 
-        [TestMethod()]
-        public void ManualPlugin_CreateAuthorizationFileTest()
+        [TestMethod]
+        public void WebDAVPlugin_CreateAuthorizationFileTest()
         {
-            ManualPlugin plugin;
+            WebDAVPlugin plugin;
             Options options;
             CreatePlugin(out plugin, out options);
             plugin.hostName = HTTPProxyServer;
             var rootPath = Plugin.BaseDirectory;
-            plugin.localPath = rootPath;
+            plugin.WebDAVPath = ProxyUrl(proxyWebDavUrl);
             
             var token = "this-is-a-test";
             var challengeLocation = $"/.well-known/acme-challenge/{token}";
             var challengeFile = $"{rootPath}{challengeLocation}".Replace('/', Path.DirectorySeparatorChar);
             plugin.CreateAuthorizationFile(challengeFile, token);
-            Assert.IsTrue(File.Exists(challengeFile));
+        }
+        
+        [TestMethod]
+        public void WebDAVPlugin_DeleteAuthorizationTest()
+        {
+            WebDAVPlugin plugin;
+            Options options;
+            CreatePlugin(out plugin, out options);
+
+            var token = "this-is-a-test";
+            var webRoot = "/";
+            var challengeLocation = $"/.well-known/acme-challenge/{token}";
+            var rootPath = Plugin.BaseDirectory;
+            options.CleanupFolders = true;
+            
+            plugin.DeleteAuthorization(options, rootPath + challengeLocation, token, webRoot, challengeLocation);
         }
 
         [TestCleanup]

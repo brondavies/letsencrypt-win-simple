@@ -31,7 +31,7 @@ namespace letsencrypt_tests.Support
             if (filesystemProvider == null) { filesystemProvider = new DotNetFileSystemProvider(localPath, false); }
             if (commandHandler == null) { commandHandler = new AssemblyFtpCommandHandlerFactory(typeof(FtpServer).GetTypeInfo().Assembly); }
 
-            server = new FtpServer(filesystemProvider, membershipProvider, "127.0.0.1", listenPort, commandHandler);
+            server = new FtpServer(filesystemProvider, membershipProvider, "0.0.0.0", listenPort, commandHandler);
             server.Start();
         }
 

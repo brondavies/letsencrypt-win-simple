@@ -82,7 +82,10 @@ namespace LetsEncryptWinSimple
                 string message = string.Format(R.Doyouwanttoautomaticallyrenewthiscertificate, Options.RenewalPeriod);
                 if (LetsEncrypt.PromptYesNo(Options, message))
                 {
-                    LetsEncrypt.ScheduleRenewal(target, Options);
+                    using (var taskService = new TaskServiceWrapper())
+                    {
+                        LetsEncrypt.ScheduleRenewal(target, Options, taskService);
+                    }
                 }
             }
         }

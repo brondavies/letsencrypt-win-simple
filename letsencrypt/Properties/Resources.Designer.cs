@@ -449,7 +449,7 @@ namespace letsencrypt.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to replace the existing {taskName} task?.
+        ///   Looks up a localized string similar to Do you want to replace the existing {0} task?.
         /// </summary>
         public static string DoyouwanttoreplacetheexistingtaskName {
             get {
@@ -1367,6 +1367,15 @@ namespace letsencrypt.Properties {
         public static string Updatingregistration {
             get {
                 return ResourceManager.GetString("Updatingregistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded files may not have been removed..
+        /// </summary>
+        public static string Uploadedfilesmaynotbecleanedup {
+            get {
+                return ResourceManager.GetString("Uploadedfilesmaynotbecleanedup", resourceCulture);
             }
         }
         
