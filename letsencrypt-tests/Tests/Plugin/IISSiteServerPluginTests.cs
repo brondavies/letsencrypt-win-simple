@@ -47,7 +47,7 @@ namespace letsencrypt_tests
             options.CertOutPath = options.ConfigPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_ValidateTest()
         {
             IISSiteServerPlugin plugin;
@@ -57,7 +57,7 @@ namespace letsencrypt_tests
             Assert.IsTrue(plugin.Validate(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_ValidateFailsTest()
         {
             IISSiteServerPlugin plugin;
@@ -69,7 +69,7 @@ namespace letsencrypt_tests
             MockIISServerManager.MajorVersion = oldVersion;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_ValidateFails2Test()
         {
             IISSiteServerPlugin plugin;
@@ -81,7 +81,7 @@ namespace letsencrypt_tests
             MockIISServerManager.ReturnMockSites = true;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_GetSelectedTest()
         {
             IISSiteServerPlugin plugin;
@@ -91,7 +91,7 @@ namespace letsencrypt_tests
             Assert.IsFalse(plugin.GetSelected(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false)));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_SelectOptionsTest()
         {
             IISSiteServerPlugin plugin;
@@ -105,7 +105,7 @@ namespace letsencrypt_tests
             Assert.IsFalse(plugin.SelectOptions(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_DeleteAuthorizationTest()
         {
             IISSiteServerPlugin plugin;
@@ -124,7 +124,7 @@ namespace letsencrypt_tests
             Assert.IsFalse(File.Exists(challengeFile));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_InstallTest()
         {
             IISSiteServerPlugin plugin;
@@ -143,7 +143,7 @@ namespace letsencrypt_tests
             plugin.Renew(target, options);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_InstallCentralSSLTest()
         {
             IISSiteServerPlugin plugin;
@@ -164,7 +164,7 @@ namespace letsencrypt_tests
             plugin.Renew(target, options);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_GetTargetsTest()
         {
             IISSiteServerPlugin plugin;
@@ -181,7 +181,7 @@ namespace letsencrypt_tests
             Assert.AreEqual(0, targets[0].SiteId);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_PrintMenuTest()
         {
             IISSiteServerPlugin plugin;
@@ -190,7 +190,7 @@ namespace letsencrypt_tests
             plugin.PrintMenu();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_BeforeAuthorizeTest()
         {
             IISSiteServerPlugin plugin;
@@ -211,7 +211,7 @@ namespace letsencrypt_tests
             Assert.IsTrue(File.Exists(webconfigFile));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IISSiteServerPlugin_CreateAuthorizationFileTest()
         {
             IISSiteServerPlugin plugin;

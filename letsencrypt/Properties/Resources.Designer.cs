@@ -449,7 +449,7 @@ namespace letsencrypt.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to replace the existing {taskName} task?.
+        ///   Looks up a localized string similar to Do you want to replace the existing {0} task?.
         /// </summary>
         public static string DoyouwanttoreplacetheexistingtaskName {
             get {

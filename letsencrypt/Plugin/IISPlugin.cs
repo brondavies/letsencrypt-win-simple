@@ -603,25 +603,18 @@ namespace letsencrypt
                     var folderPath = answerPath.Remove((answerPath.Length - token.Length), token.Length);
                     var files = Directory.GetFiles(folderPath);
 
-                    if (files.Length == 1)
+                    if (files.Length == 1 && files[0] == (folderPath + "web.config"))
                     {
-                        if (files[0] == (folderPath + "web.config"))
-                        {
-                            Log.Information(R.Deletingwebconfig);
-                            File.Delete(files[0]);
-                            Log.Information(R.Deletingfolderpath, folderPath);
-                            Directory.Delete(folderPath);
+                        Log.Information(R.Deletingwebconfig);
+                        File.Delete(files[0]);
+                        Log.Information(R.Deletingfolderpath, folderPath);
+                        Directory.Delete(folderPath);
 
-                            var filePathFirstDirectory =
-                                Environment.ExpandEnvironmentVariables(Path.Combine(webRootPath,
-                                    filePath.Remove(filePath.IndexOf("/"), (filePath.Length - filePath.IndexOf("/")))));
-                            Log.Information(R.Deletingfolderpath, filePathFirstDirectory);
-                            Directory.Delete(filePathFirstDirectory);
-                        }
-                        else
-                        {
-                            Log.Warning(R.Additionalfilesexistinfolderpath, folderPath);
-                        }
+                        var filePathFirstDirectory =
+                            Environment.ExpandEnvironmentVariables(Path.Combine(webRootPath,
+                                filePath.Remove(filePath.IndexOf("/"), (filePath.Length - filePath.IndexOf("/")))));
+                        Log.Information(R.Deletingfolderpath, filePathFirstDirectory);
+                        Directory.Delete(filePathFirstDirectory);
                     }
                     else
                     {

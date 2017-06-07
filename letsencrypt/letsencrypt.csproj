@@ -152,11 +152,14 @@
     <Compile Include="Support\IIS\IISBindingWrapper.cs" />
     <Compile Include="Support\IIS\IISServerManagerWrapper.cs" />
     <Compile Include="Support\IIS\IISSiteWrapper.cs" />
+    <Compile Include="Support\ITaskService.cs" />
     <Compile Include="Support\ObjectExtensions.cs" />
     <Compile Include="Support\Options.cs" />
     <Compile Include="Support\ScheduledRenewal.cs" />
+    <Compile Include="Support\Scheduling\TaskWrapper.cs" />
     <Compile Include="Support\Settings.cs" />
     <Compile Include="Support\Target.cs" />
+    <Compile Include="Support\Scheduling\TaskServiceWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -3,7 +3,7 @@ using System;
 
 namespace letsencrypt.Support
 {
-    internal class ScheduledRenewal
+    public class ScheduledRenewal
     {
         public DateTime Date { get; set; }
         public Target Binding { get; set; }
