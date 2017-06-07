@@ -388,17 +388,11 @@ namespace letsencrypt_tests.Support
         {
         }
 
-        [ClassCleanup]
-        public virtual void AfterAll()
+        [AssemblyCleanup]
+        public static void AfterAll()
         {
-            if (StartFTPProxy)
-            {
-                MockFtpServer.Stop();
-            }
-            if (StartHTTPProxy)
-            {
-                MockHttpServer.Stop();
-            }
+            MockFtpServer.Stop();
+            MockHttpServer.Stop();
         }
     }
 }
