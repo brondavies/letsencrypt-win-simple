@@ -153,6 +153,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="LetsEncryptTests.cs" />
+    <Compile Include="Tests\AzureRestApiTests.cs" />
     <Compile Include="Tests\LetsEncryptTests.cs" />
     <Compile Include="Tests\ObjectExtensionsTests.cs" />
     <Compile Include="Tests\Plugin\FTPPluginTests.cs" />
