@@ -53,8 +53,12 @@ namespace letsencrypt_tests.Support
 
         public Task<IEnumerable<Item>> List(string path = "/", int? depth = 1)
         {
-            IEnumerable<Item> list = new List<Item>();
-            return Task.FromResult(list);
+            List<Item> list = new List<Item>();
+            list.Add(new Item
+            {
+                DisplayName = "web.config"
+            });
+            return Task.FromResult((IEnumerable<Item>)list);
         }
 
         public Task<bool> MoveFile(string srcFilePath, string dstFilePath)

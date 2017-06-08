@@ -221,8 +221,8 @@ namespace letsencrypt
                 retry = false;
                 try
                 {
-                    var request = WebRequest.Create(uri);
-                    request.Headers.Add(HttpRequestHeader.UserAgent, LetsEncrypt.CLIENT_NAME);
+                    var request = (HttpWebRequest)WebRequest.Create(uri);
+                    request.UserAgent = LetsEncrypt.CLIENT_NAME;
                     request.Method = "GET";
                     request.Timeout = 120000; //2 minutes
                     request.GetResponse();
@@ -474,9 +474,7 @@ namespace letsencrypt
         /// <param name="target"></param>
         /// <param name="answerPath"></param>
         /// <param name="token"></param>
-        public virtual void BeforeAuthorize(Target target, string answerPath, string token)
-        {
-        }
+        public abstract void BeforeAuthorize(Target target, string answerPath, string token);
 
         /// <summary>
         /// Can be used to print out helpful troubleshooting info for the user.
@@ -524,7 +522,7 @@ namespace letsencrypt
         /// </summary>
         /// <param name="answerPath">where the answerFile should be located</param>
         /// <param name="fileContents">the contents of the file to write</param>
-        public virtual void CreateAuthorizationFile(string answerPath, string fileContents) { }
+        public abstract void CreateAuthorizationFile(string answerPath, string fileContents);
 
         /// <summary>
         /// Should delete any authorizations

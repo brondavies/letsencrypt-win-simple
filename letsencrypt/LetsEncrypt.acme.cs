@@ -81,7 +81,7 @@ namespace letsencrypt
             }
         }
 
-        private static string[] GetContacts(string email)
+        public static string[] GetContacts(string email)
         {
             var contacts = new string[] { };
             if (!String.IsNullOrEmpty(email))
