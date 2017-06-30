@@ -146,7 +146,7 @@ namespace letsencrypt
             return string.Join(",", values);
         }
 
-        private static string Pad(int number, int width)
+        public static string Pad(int number, int width)
         {
             string result = number.ToString();
             while (result.Length < width) { result = " " + result; }
@@ -197,7 +197,7 @@ namespace letsencrypt
             return password;
         }
 
-        internal static string GetString(Dictionary<string, string> dict, string key, string defaultValue = null)
+        public static string GetString(Dictionary<string, string> dict, string key, string defaultValue = null)
         {
             if (dict != null && dict.ContainsKey(key))
             {
@@ -206,7 +206,7 @@ namespace letsencrypt
             return defaultValue;
         }
 
-        internal static string GetString(ObjectDictionary dict, string key, string defaultValue = null)
+        public static string GetString(ObjectDictionary dict, string key, string defaultValue = null)
         {
             if (dict.ContainsKey(key))
             {
@@ -215,11 +215,11 @@ namespace letsencrypt
             return defaultValue;
         }
 
-        internal static string GetString(JToken obj, string key, string defaultValue = null)
+        public static string GetString(JToken obj, string key, string defaultValue = null)
         {
             try
             {
-                return (string)obj[key];
+                return (string)obj[key] ?? defaultValue;
             }
             catch { }
             return defaultValue;

@@ -20,7 +20,7 @@ namespace letsencrypt.Support
 
         public static string AuthRootUrl = "https://login.microsoftonline.com";
 
-        static internal ObjectDictionary InstallCertificate(Options options, string access_token, string subscriptionId, string hostName, JToken webApp, string pfxFilename)
+        public static ObjectDictionary InstallCertificate(Options options, string access_token, string subscriptionId, string hostName, JToken webApp, string pfxFilename)
         {
             string resourceGroupName = (string)webApp["properties"]["resourceGroup"];
             string[] hostNames = hostName.Split(", ;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -53,10 +53,6 @@ namespace letsencrypt.Support
             {
                 Log.Error(e, R.Installationofthecertificatefailed);
                 result = ReadErrorResponse(e);
-                if (result == null)
-                {
-                    throw;
-                }
             }
             return JsonConvert.DeserializeObject<ObjectDictionary>(result);
         }
@@ -75,7 +71,7 @@ namespace letsencrypt.Support
             return result;
         }
 
-        static internal ObjectDictionary SetCertificateHostName(string access_token, string subscriptionId, string hostName, JToken webApp, string thumbprint)
+        public static ObjectDictionary SetCertificateHostName(string access_token, string subscriptionId, string hostName, JToken webApp, string thumbprint)
         {
             string name = (string)webApp["name"];
             string webAppId = (string)webApp["id"];
@@ -115,15 +111,11 @@ namespace letsencrypt.Support
             {
                 Log.Error(e, R.Associationofthecertificatefailed);
                 result = ReadErrorResponse(e);
-                if (result == null)
-                {
-                    throw;
-                }
             }
             return JsonConvert.DeserializeObject<ObjectDictionary>(result);
         }
 
-        static internal XmlDocument GetPublishingCredentials(string access_token, string webAppId)
+        public static XmlDocument GetPublishingCredentials(string access_token, string webAppId)
         {
             string url = $"{ApiRootUrl}{webAppId}/publishxml?api-version=2016-08-01";
             var xml = Post(url, TokenBearerHeaders(access_token));
@@ -132,26 +124,26 @@ namespace letsencrypt.Support
             return xdoc;
         }
 
-        static internal JArray GetWebApps(string access_token, string subscriptionId, string resourceGroupName)
+        public static JArray GetWebApps(string access_token, string subscriptionId, string resourceGroupName)
         {
             string url = $"{ApiRootUrl}/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/sites?api-version=2016-08-01&includeSlots=true";
             var results = Get<ObjectDictionary>(url, TokenBearerHeaders(access_token));
             return (JArray)results["value"];
         }
 
-        static internal JArray GetResourceGroups(string access_token, string subscriptionId)
+        public static JArray GetResourceGroups(string access_token, string subscriptionId)
         {
             var results = Get<ObjectDictionary>($"{ApiRootUrl}/subscriptions/{subscriptionId}/resourcegroups?api-version=2016-06-01", TokenBearerHeaders(access_token));
             return (JArray)results["value"];
         }
 
-        static internal JArray GetSubscriptions(string access_token)
+        public static JArray GetSubscriptions(string access_token)
         {
             var results = Get<ObjectDictionary>($"{ApiRootUrl}/subscriptions?api-version=2016-06-01", TokenBearerHeaders(access_token));
             return (JArray)results["value"];
         }
 
-        static internal ObjectDictionary Login(string tenantId, string client_id, string client_secret)
+        public static ObjectDictionary Login(string tenantId, string client_id, string client_secret)
         {
             var data = new ObjectDictionary
             {
@@ -228,25 +220,6 @@ namespace letsencrypt.Support
             }
             return Encoding.UTF8.GetString(result);
         }
-
-        //private static string PostJson(string Url, Dictionary<string, string> headers = null, ObjectDictionary data = null)
-        //{
-        //    byte[] result;
-        //    using (WebClient client = new WebClient())
-        //    {
-        //        if (headers != null)
-        //        {
-        //            foreach (var kv in headers)
-        //            {
-        //                client.Headers.Set(kv.Key, kv.Value);
-        //            }
-        //        }
-        //        client.Headers.Set(HttpRequestHeader.ContentType, "application/json");
-        //        byte[] upload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
-        //        result = client.UploadData(Url, upload);
-        //    }
-        //    return Encoding.UTF8.GetString(result);
-        //}
 
         private static string Urlencode(ObjectDictionary data)
         {

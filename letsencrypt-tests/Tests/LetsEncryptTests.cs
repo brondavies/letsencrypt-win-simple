@@ -3,6 +3,7 @@ using letsencrypt.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,53 @@ namespace letsencrypt_tests.Tests
     [TestClass]
     public class LetsEncryptTests
     {
+        [TestMethod]
+        public void LetsEncrypt_GetContactsTest()
+        {
+            Assert.IsTrue(
+                LetsEncrypt.GetContacts("test@example.com")
+                    .SequenceEqual(new string[] { "mailto:test@example.com" }));
+        }
+
+        [TestMethod]
+        public void LetsEncrypt_GetStringTest()
+        {
+            var sdict = new Dictionary<string, string>();
+            Assert.AreEqual("test",
+                LetsEncrypt.GetString(sdict, "something", "test"));
+
+            sdict["something"] = "another";
+            Assert.AreEqual("another",
+                LetsEncrypt.GetString(sdict, "something", "test"));
+
+            var dict = new ObjectDictionary();
+            Assert.AreEqual("test",
+                LetsEncrypt.GetString(dict, "something", "test"));
+
+            dict["something"] = "another";
+            Assert.AreEqual("another",
+                LetsEncrypt.GetString(sdict, "something", "test"));
+
+            var token = new JObject { };
+            Assert.AreEqual("test",
+                LetsEncrypt.GetString(token, "something", "test"));
+
+            token["something"] = "another";
+            Assert.AreEqual("another",
+                LetsEncrypt.GetString(sdict, "something", "test"));
+
+            token = null;
+            Assert.AreEqual("test",
+                LetsEncrypt.GetString(token, "something", "test"));
+        }
+
+        [TestMethod]
+        public void LetsEncrypt_PadTest()
+        {
+            Assert.AreEqual("   5", LetsEncrypt.Pad(5, 4));
+            Assert.AreEqual("  15", LetsEncrypt.Pad(15, 4));
+        }
+
         [TestMethod]
         public void LetsEncrypt_ScheduleRenewalTest()
         {
