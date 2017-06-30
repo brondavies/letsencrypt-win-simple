@@ -144,7 +144,7 @@ namespace letsencrypt
                 }
                 var answerPath = webRootPath.StartsWith("ftp")
                     ? string.Format("{0}/{1}", webRootPath, filePath)
-                    : Environment.ExpandEnvironmentVariables(Path.Combine(webRootPath, filePath));
+                    : Environment.ExpandEnvironmentVariables(Path.Combine(webRootPath, filePath.Replace('/', '\\')));
 
                 CreateAuthorizationFile(answerPath, httpChallenge.FileContent);
 
