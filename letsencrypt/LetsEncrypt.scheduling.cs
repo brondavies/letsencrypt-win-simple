@@ -76,7 +76,7 @@ namespace letsencrypt
             var runtime = new DateTime(now.Year, now.Month, now.Day, 9, 0, 0);
             task.AddTrigger(daysInterval: 1, startBoundary: runtime);
 
-            var currentExe = Assembly.GetExecutingAssembly().Location;
+            var currentExe = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
 
             // Create an action that will launch the app with the renew parameters whenever the trigger fires
             string commandLine = $"--renew --baseuri \"{options.BaseUri}\"";
@@ -84,7 +84,7 @@ namespace letsencrypt
             {
                 commandLine += $" --certoutpath \"{options.CertOutPath}\"";
             }
-            task.AddAction(executable: currentExe, arguments: commandLine, startLocation: Path.GetDirectoryName(currentExe));
+            task.AddAction(executable: currentExe, arguments: commandLine, startLocation: Directory.GetCurrentDirectory());
 
             if (!options.Silent && !options.UseDefaultTaskUser && PromptYesNo(options, "\n" + R.Doyouwanttospecifytheuserthetaskwillrunas, false))
             {

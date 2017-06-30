@@ -37,7 +37,7 @@ namespace letsencrypt
         {
             get
             {
-                return Path.GetDirectoryName(Assembly.GetAssembly(typeof(Plugin)).Location);
+                return Path.GetDirectoryName((new Uri(Assembly.GetExecutingAssembly().CodeBase)).LocalPath);
             }
         }
 
