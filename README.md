@@ -34,7 +34,7 @@ Option                 | Description
 --help                 | Display the help screen.
 --hidehttps            | Hide sites that have existing HTTPS bindings
 --keepexisting         | Keep existing HTTPS bindings, and certificates
---manualhost           | A host name to manually get a certificate for. The webroot option must also be set.
+--hostname             | Host names to get a certificate for. (comma separated)
 --pfxpassword          | The password to use on the certificate PFX file
 --plugin               | Which plugin to use
 --pluginconfig         | Path to the plugin configuration file.

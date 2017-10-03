@@ -39,8 +39,8 @@ namespace letsencrypt.Support
         [Option(HelpText = "Overrides BaseUri setting to https://acme-staging.api.letsencrypt.org/")]
         public bool Test { get; set; }
 
-        [Option(HelpText = "A host name to manually get a certificate for. --webroot must also be set.")]
-        public string ManualHost { get; set; }
+        [Option(HelpText = "Host names to get a certificate for. (comma separated)")]
+        public string Hostname { get; set; }
 
         [Option(Default = @"%SystemDrive%\inetpub\wwwroot",
             HelpText = "The web root to use for manual host name authentication.")]

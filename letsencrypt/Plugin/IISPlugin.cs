@@ -55,21 +55,28 @@ namespace letsencrypt
         public override bool SelectOptions(Options options)
         {
             targets = GetTargets(options);
-            string hostNames = LetsEncrypt.GetString(config, "host_name");
+            string hostNames = LetsEncrypt.GetString(config, "host_name", options.Hostname);
             if (string.IsNullOrEmpty(hostNames))
             {
+                int i = 1;
+                int width = targets.Count.ToString().Length;
+                foreach (var target in targets)
+                {
+                    Console.WriteLine(" {0}: {1}", LetsEncrypt.Pad(i, width), target.Host);
+                    i++;
+                }
                 Console.WriteLine(R.GetcertificatesforallhostsMenu);
                 Console.WriteLine(R.QuitMenu);
-                Console.Write(R.Choosefromoneofthemenuoptionsabove);
-                var command = LetsEncrypt.ReadCharFromConsole(options);
+                Console.WriteLine(R.Choosefromoneofthemenuoptionsabove);
+                var command = LetsEncrypt.PromptForText(options, R.YoucanentermultipleIDscommaseparated).ToLowerInvariant();
                 switch (command)
                 {
-                    case ConsoleKey.A:
+                    case "a":
                         break;
-                    case ConsoleKey.Q:
+                    case "q":
                         return false;
                     default:
-                        GetTargetsForEntry(options, command.ToString().ToLowerInvariant());
+                        GetTargetsForEntry(options, command.Split(',', ';', ' '));
                         break;
                 }
             }
@@ -85,24 +92,22 @@ namespace letsencrypt
             return true;
         }
 
-        private void GetTargetsForEntry(Options options, string command)
+        private void GetTargetsForEntry(Options options, string[] commands)
         {
-            var targetId = 0;
-            if (int.TryParse(command, out targetId))
+            var selected = new List<Target>();
+            foreach (var command in commands)
             {
-                if (!options.San)
+                var targetId = 0;
+                if (int.TryParse(command, out targetId))
                 {
                     var targetIndex = targetId - 1;
                     if (targetIndex >= 0 && targetIndex < targets.Count)
                     {
-                        targets = new List<Target>(new[] { targets[targetIndex] });
+                        selected.Add(targets[targetIndex]);
                     }
                 }
-                else
-                {
-                    targets = new List<Target>(new[] { targets.First(t => t.SiteId == targetId) });
-                }
             }
+            targets = selected;
         }
 
         private void GetTargetsForHostNames(Options options, string[] hostNames)

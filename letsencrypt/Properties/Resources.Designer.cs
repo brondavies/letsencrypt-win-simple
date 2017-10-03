@@ -1461,6 +1461,15 @@ namespace letsencrypt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can enter multiple IDs comma-separated e.g. 1,2,3.
+        /// </summary>
+        public static string YoucanentermultipleIDscommaseparated {
+            get {
+                return ResourceManager.GetString("YoucanentermultipleIDscommaseparated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can find the certificate at {pfxFilename}.
         /// </summary>
         public static string YoucanfindthecertificateatpfxFilename {

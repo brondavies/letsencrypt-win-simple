@@ -46,7 +46,7 @@ namespace letsencrypt
                 siteList = new List<Target>();
                 config = GetConfig(options);
 
-                string hostName = LetsEncrypt.GetString(config, "host_name");
+                string hostName = LetsEncrypt.GetString(config, "host_name", options.Hostname);
                 if (string.IsNullOrEmpty(hostName))
                 {
                     foreach (var target in targets)

@@ -88,7 +88,7 @@ namespace letsencrypt
                 Log.Information(R.SanCertificatesarenotsupportedbytheAzureWebAppPlugin);
             }
 
-            hostName = LetsEncrypt.GetString(config, "host_name");
+            hostName = LetsEncrypt.GetString(config, "host_name", options.Hostname);
             if (string.IsNullOrEmpty(hostName))
             {
                 JArray hostnames = GetHostNamesFromWebApp(webApp);

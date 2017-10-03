@@ -45,7 +45,7 @@ namespace letsencrypt
 
         public override bool SelectOptions(Options options)
         {
-            hostName = LetsEncrypt.GetString(config, "host_name");
+            hostName = LetsEncrypt.GetString(config, "host_name", options.Hostname);
             if (string.IsNullOrEmpty(hostName))
             {
                 hostName = LetsEncrypt.PromptForText(options, R.Enterhostname);

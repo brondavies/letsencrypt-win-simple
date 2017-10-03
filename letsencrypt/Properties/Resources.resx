@@ -599,4 +599,7 @@ Check in a browser to see if the answer file is being served correctly. If it is
   <data name="Uploadedfilesmaynotbecleanedup" xml:space="preserve">
     <value>Uploaded files may not have been removed.</value>
   </data>
+  <data name="YoucanentermultipleIDscommaseparated" xml:space="preserve">
+    <value>You can enter multiple IDs comma-separated e.g. 1,2,3</value>
+  </data>
 </root>
